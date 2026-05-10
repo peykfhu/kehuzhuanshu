@@ -1,0 +1,215 @@
+<style>
+:root{--bg:#fafafa;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--accent:#2563eb;--accent2:#0891b2;--card:#ffffff;--nav-bg:rgba(255,255,255,0.72)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+a{text-decoration:none;color:inherit}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+#ap-lang-toggle{display:none}
+#ap-lang-toggle:checked~.ap-wrap .ap-zh{display:none!important}
+#ap-lang-toggle:not(:checked)~.ap-wrap .ap-en{display:none!important}
+#ap-lang-toggle:checked~.ap-wrap .ap-lang-label .ap-lang-zh{display:inline}
+#ap-lang-toggle:checked~.ap-wrap .ap-lang-label .ap-lang-en{display:none}
+#ap-lang-toggle:not(:checked)~.ap-wrap .ap-lang-label .ap-lang-zh{display:none}
+#ap-lang-toggle:not(:checked)~.ap-wrap .ap-lang-label .ap-lang-en{display:inline}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.28)}50%{box-shadow:0 0 0 12px rgba(37,99,235,0)}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes blink{50%{border-color:transparent}}
+.ap-tw-box{display:inline-block;position:relative;width:11em;height:2rem;text-align:left;font-size:1.3rem}
+.ap-tw-word{position:absolute;left:0;top:0;white-space:nowrap;overflow:hidden;width:0;border-right:2px solid var(--accent);height:100%;line-height:2rem;font-weight:300;letter-spacing:2px;color:var(--muted);animation:ap-t1 6s linear infinite,blink .8s step-end infinite}
+@keyframes ap-t1{0%{width:0;animation-timing-function:steps(10)}20%{width:11em}75%{width:11em;animation-timing-function:steps(10)}90%{width:0}100%{width:0}}
+
+/* 1. 开启继承 (inherits: true)，并将 num2 改为整数类型 */
+@property --ap-num1{syntax:'<integer>';initial-value:0;inherits:true}
+@property --ap-num2{syntax:'<integer>';initial-value:0;inherits:true}
+@property --ap-num3{syntax:'<integer>';initial-value:0;inherits:true}
+
+/* 2. 确保目标值都是整数 */
+@keyframes ap-count1{from{--ap-num1:0}to{--ap-num1:10}}
+@keyframes ap-count2{from{--ap-num2:0}to{--ap-num2:100}} /* CSS Counter 不支持小数，这里改为 100 */
+@keyframes ap-count3{from{--ap-num3:0}to{--ap-num3:200}}
+.ap-counter-1::after{content:counter(ap-num1) '+';counter-reset:ap-num1 var(--ap-num1)}
+.ap-counter-2::after{content:counter(ap-num2,decimal) '%';counter-reset:ap-num2 var(--ap-num2)}
+.ap-counter-3::before{content:'<'}
+.ap-counter-3::after{content:counter(ap-num3) 'ms';counter-reset:ap-num3 var(--ap-num3)}
+.ap-counter-1{animation:ap-count1 1.5s cubic-bezier(.22,1,.36,1) 1.2s both}
+.ap-counter-2{animation:ap-count2 1.5s cubic-bezier(.22,1,.36,1) 1.4s both}
+.ap-counter-3{animation:ap-count3 1.5s cubic-bezier(.22,1,.36,1) 1.6s both}
+
+.ap-wrap{min-height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.ap-grid{position:absolute;inset:0;background-image:radial-gradient(#d1d5db 1px,transparent 1px);background-size:32px 32px;opacity:.25;z-index:0;animation:fadeIn 1.5s ease}
+.ap-glow{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);width:1000px;height:1000px;background:radial-gradient(circle,rgba(37,99,235,.07) 0%,rgba(8,145,178,.035) 42%,transparent 70%);z-index:0;pointer-events:none}
+.ap-circles{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none}
+.ap-circle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px dashed rgba(0,0,0,.04);animation:spin 60s linear infinite}
+.ap-c1{width:300px;height:300px;animation-duration:80s}
+.ap-c2{width:550px;height:550px;animation-duration:120s;animation-direction:reverse}
+.ap-c3{width:800px;height:800px;animation-duration:160s}
+.ap-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;position:relative;z-index:10;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both}
+.ap-nav-logo{font-size:1.15rem;font-weight:800;display:flex;align-items:center;gap:10px;letter-spacing:0;transition:opacity .3s}
+.ap-nav-logo:hover{opacity:.8}
+.ap-logo-img{width:30px;height:30px;border-radius:7px;object-fit:cover;border:1px solid rgba(37,99,235,.18);box-shadow:0 4px 14px rgba(37,99,235,.12)}
+.ap-nav-links{display:flex;gap:20px;align-items:center;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:8px 26px;border-radius:40px;border:1px solid rgba(0,0,0,.04);box-shadow:0 2px 12px rgba(0,0,0,.03);font-size:.86rem;font-weight:500}
+.ap-nav-links a{color:var(--muted);transition:all .3s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;gap:6px;position:relative}
+.ap-nav-links a:hover,.ap-nav-links a.ap-active{color:var(--accent)}
+.ap-nav-links a.ap-active::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.ap-dot-green{width:5px;height:5px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s ease infinite}
+.ap-nav-right{display:flex;align-items:center;gap:10px}
+.ap-lang-label{background:none;border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .3s}
+.ap-lang-label:hover{border-color:var(--accent);color:var(--accent)}
+.ap-btn-console{background:linear-gradient(135deg,#18181b,#27272a);color:#fff;padding:8px 22px;border-radius:30px;display:flex;align-items:center;gap:6px;font-size:.86rem;font-weight:600;transition:all .35s cubic-bezier(.22,1,.36,1);border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+.ap-btn-console::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(37,99,235,.18),transparent);opacity:0;transition:opacity .35s}
+.ap-btn-console:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ap-btn-console:hover::before{opacity:1}
+.ap-hero{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;z-index:10;padding:0 20px}
+.ap-hero-badge{background:rgba(255,255,255,.65);backdrop-filter:blur(8px);border:1px solid var(--border);padding:6px 18px;border-radius:30px;font-size:.76rem;color:var(--muted);margin-bottom:28px;display:flex;align-items:center;gap:8px;font-weight:500;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .1s both;transition:all .3s}
+.ap-hero-badge:hover{border-color:var(--accent);transform:translateY(-1px)}
+.ap-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s ease infinite}
+.ap-hero-title{font-size:clamp(3rem,8vw,5.5rem);font-weight:900;letter-spacing:0;line-height:1.08;margin-bottom:6px;background:linear-gradient(135deg,#111827 0%,#2563eb 48%,#111827 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .2s both,shimmer 6s ease infinite}
+.ap-hero-subtitle{font-size:1.8rem;font-weight:400;color:var(--muted);letter-spacing:6px;margin-bottom:20px;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .25s both}
+.ap-hero-sub{font-size:1.3rem;color:var(--muted);margin-bottom:44px;height:2rem;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .3s both;display:flex;justify-content:center;align-items:center}
+.ap-hero-btns{display:flex;gap:14px;align-items:center;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .4s both}
+.ap-btn-main{background:linear-gradient(135deg,#18181b,#1f1f23);color:#fff;font-size:1rem;padding:15px 38px;border-radius:13px;font-weight:600;transition:all .35s cubic-bezier(.22,1,.36,1);box-shadow:0 8px 20px rgba(0,0,0,.12);display:inline-block;position:relative;overflow:hidden}
+.ap-btn-main::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(37,99,235,.22),rgba(8,145,178,.12));opacity:0;transition:opacity .35s}
+.ap-btn-main:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(0,0,0,.2)}
+.ap-btn-main:hover::before{opacity:1}
+.ap-btn-main:active{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.ap-btn-secondary{color:var(--text);font-size:.95rem;padding:15px 30px;border-radius:13px;font-weight:600;transition:all .35s cubic-bezier(.22,1,.36,1);border:1px solid var(--border);background:var(--card)}
+.ap-btn-secondary:hover{border-color:#bfdbfe;color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 16px rgba(37,99,235,.08)}
+.ap-btn-secondary:active{transform:translateY(0)}
+.ap-stats{position:relative;z-index:10;max-width:720px;margin:50px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;text-align:center;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .5s both}
+.ap-stat-item{padding:16px;border-radius:14px;transition:all .3s cubic-bezier(.22,1,.36,1)}
+.ap-stat-item:hover{background:rgba(37,99,235,.04);transform:translateY(-2px)}
+.ap-stat-item h4{font-size:2rem;font-weight:800;letter-spacing:0;background:linear-gradient(135deg,var(--accent),#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ap-stat-item p{font-size:.82rem;color:var(--muted);margin-top:4px}
+.ap-features{position:relative;z-index:10;max-width:1100px;margin:50px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.ap-feat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px 22px;transition:all .35s cubic-bezier(.22,1,.36,1);animation:fadeUp .6s cubic-bezier(.22,1,.36,1) both}
+.ap-feat-card:nth-child(1){animation-delay:.55s}
+.ap-feat-card:nth-child(2){animation-delay:.65s}
+.ap-feat-card:nth-child(3){animation-delay:.75s}
+.ap-feat-card:nth-child(4){animation-delay:.85s}
+.ap-feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.06);border-color:#d1d5db}
+.ap-feat-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.ap-feat-card:hover .ap-feat-icon{transform:scale(1.1)}
+.ap-feat-card h3{font-size:.95rem;font-weight:700;margin-bottom:8px}
+.ap-feat-card p{font-size:.84rem;color:var(--muted);line-height:1.65}
+.ap-bottom{padding:40px 20px;text-align:center;position:relative;z-index:10;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .9s both}
+.ap-pills{display:flex;gap:10px;justify-content:center;margin-bottom:30px;flex-wrap:wrap}
+.ap-pill{background:#fff;border:1px solid var(--border);padding:6px 14px;border-radius:30px;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px;font-weight:500;transition:all .3s cubic-bezier(.22,1,.36,1)}
+.ap-pill:hover{border-color:#bfdbfe;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.ap-footer{width:100%;max-width:1100px;margin:0 auto;border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;font-size:.78rem;color:#9ca3af;flex-wrap:wrap;gap:10px}
+.ap-footer-links{display:flex;gap:20px}
+.ap-footer-links a{transition:color .3s}
+.ap-footer-links a:hover{color:var(--accent)}
+@media(max-width:768px){
+.ap-nav{padding:14px 16px;flex-wrap:wrap;gap:10px}
+.ap-nav-links{display:none}
+.ap-features{grid-template-columns:1fr}
+.ap-stats{grid-template-columns:1fr;gap:8px}
+.ap-hero-title{letter-spacing:0;font-size:3rem}
+.ap-hero-btns{flex-direction:column;width:100%}
+.ap-btn-main,.ap-btn-secondary{width:100%;text-align:center}
+.ap-footer{flex-direction:column;align-items:center;text-align:center}
+}
+</style>
+
+<input type="checkbox" id="ap-lang-toggle">
+
+<div class="ap-wrap">
+    <div class="ap-grid"></div>
+    <div class="ap-glow"></div>
+    <div class="ap-circles"><div class="ap-circle ap-c1"></div><div class="ap-circle ap-c2"></div><div class="ap-circle ap-c3"></div></div>
+
+    <header class="ap-nav">
+        <a href="/" target="_top" class="ap-nav-logo"><img src="/anyhop.jpg" alt="AnyHop AI" class="ap-logo-img"> AnyHop AI</a>
+        <nav class="ap-nav-links">
+            <a href="/" target="_top" class="ap-active"><span class="ap-dot-green"></span> <span class="ap-zh">首页</span><span class="ap-en">Home</span></a>
+            <a href="/pricing.html" target="_top"><span class="ap-zh">模型广场</span><span class="ap-en">Models</span></a>
+            <a href="/tutorial.html" target="_top"><span class="ap-zh">教程</span><span class="ap-en">Tutorial</span></a>
+            <a href="/docs.html" target="_top"><span class="ap-zh">文档</span><span class="ap-en">Docs</span></a>
+        </nav>
+        <div class="ap-nav-right">
+            <label for="ap-lang-toggle" class="ap-lang-label"><span class="ap-lang-en">EN</span><span class="ap-lang-zh">中文</span></label>
+            <a href="/index.html" class="ap-btn-console" target="_top"><span class="ap-zh">控制台 ↗</span><span class="ap-en">Console ↗</span></a>
+        </div>
+    </header>
+
+    <main class="ap-hero">
+        <div class="ap-hero-badge"><span class="ap-badge-dot"></span> <span class="ap-zh">AI API 中转站 · 全球加速</span><span class="ap-en">AI API Gateway · Global Acceleration</span></div>
+        <h1 class="ap-hero-title">AnyHop AI</h1>
+        <p class="ap-hero-subtitle">AI 中转站</p>
+        <div class="ap-hero-sub">
+            <span class="ap-zh"><div class="ap-tw-box"><span class="ap-tw-word">AnyHop 让连接更稳定</span></div></span>
+            <span class="ap-en" style="font-weight:300;letter-spacing:2px;color:var(--muted)">AnyHop AI Makes Connections More Stable</span>
+        </div>
+        <div class="ap-hero-btns">
+            <a href="/index.html" class="ap-btn-main" target="_top"><span class="ap-zh">进入控制台 &rarr;</span><span class="ap-en">Console &rarr;</span></a>
+            <a href="/docs.html" class="ap-btn-secondary" target="_top"><span class="ap-zh">查看文档</span><span class="ap-en">View Docs</span></a>
+        </div>
+    </main>
+
+    <section class="ap-stats">
+        <div class="ap-stat-item"><h4 class="ap-counter-1"></h4><p><span class="ap-zh">可用模型</span><span class="ap-en">Available Models</span></p></div>
+        <div class="ap-stat-item"><h4 class="ap-counter-2"></h4><p><span class="ap-zh">服务可用性</span><span class="ap-en">Uptime</span></p></div>
+        <div class="ap-stat-item"><h4 class="ap-counter-3"></h4><p><span class="ap-zh">平均延迟</span><span class="ap-en">Avg Latency</span></p></div>
+    </section>
+
+    <section class="ap-features">
+        <div class="ap-feat-card">
+            <div class="ap-feat-icon" style="background:#f0fdf4;color:#16a34a">⚡</div>
+            <h3><span class="ap-zh">极速响应</span><span class="ap-en">Fast Response</span></h3>
+            <p><span class="ap-zh">全球多节点部署，智能路由选择最优线路，确保 API 调用毫秒级响应。</span><span class="ap-en">Multi-node global deployment with intelligent routing for millisecond-level API response.</span></p>
+        </div>
+        <div class="ap-feat-card">
+            <div class="ap-feat-icon" style="background:#eff6ff;color:#2563eb">🔗</div>
+            <h3><span class="ap-zh">多模型聚合</span><span class="ap-en">Multi-Model Gateway</span></h3>
+            <p><span class="ap-zh">一个 API Key 接入 Claude、GPT、Gemini、DeepSeek 等主流大模型。</span><span class="ap-en">Access Claude, GPT, Gemini, DeepSeek and more with a single API Key.</span></p>
+        </div>
+        <div class="ap-feat-card">
+            <div class="ap-feat-icon" style="background:#fef3c7;color:#d97706">🛡️</div>
+            <h3><span class="ap-zh">稳定中转</span><span class="ap-en">Stable Relay</span></h3>
+            <p><span class="ap-zh">智能负载均衡与故障自动切换，保障接口调用持续稳定。</span><span class="ap-en">Smart load balancing and automatic failover keep API calls stable.</span></p>
+        </div>
+        <div class="ap-feat-card">
+            <div class="ap-feat-icon" style="background:#f5f3ff;color:#7c3aed">📊</div>
+            <h3><span class="ap-zh">透明计费</span><span class="ap-en">Transparent Billing</span></h3>
+            <p><span class="ap-zh">按实际用量计费，详细的用量报表与实时余额提醒，消费一目了然。</span><span class="ap-en">Pay-as-you-go pricing with detailed usage reports and real-time balance alerts.</span></p>
+        </div>
+    </section>
+
+    <div class="ap-bottom">
+        <div class="ap-pills">
+            <div class="ap-pill"><span style="color:#f97316">●</span> Claude</div>
+            <div class="ap-pill"><span style="color:#10b981">●</span> GPT</div>
+            <div class="ap-pill"><span style="color:#3b82f6">●</span> Gemini</div>
+            <div class="ap-pill"><span style="color:#8b5cf6">●</span> DeepSeek</div>
+        </div>
+        <footer class="ap-footer">
+            <div>&copy; 2026 AnyHop AI. <span class="ap-zh">保留所有权利.</span><span class="ap-en">All rights reserved.</span></div>
+            <div class="ap-footer-links">
+                <a href="/docs.html" target="_top"><span class="ap-zh">文档</span><span class="ap-en">Docs</span></a>
+                <a href="/terms.html" target="_top"><span class="ap-zh">服务条款</span><span class="ap-en">Terms</span></a>
+                <a href="/privacy.html" target="_top"><span class="ap-zh">隐私政策</span><span class="ap-en">Privacy</span></a>
+                <a href="/policy.html" target="_top"><span class="ap-zh">使用政策</span><span class="ap-en">Policy</span></a>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<script>
+var apStats = document.querySelector('.ap-stats');
+if (apStats) {
+    var ob = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) {
+                e.target.classList.add('ap-stats-visible');
+                ob.unobserve(e.target);
+            }
+        });
+    }, {threshold: 0.3});
+    ob.observe(apStats);
+}
+</script>

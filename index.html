@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>AnyHop AI · 登录控制台</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',
+            300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',
+            600:'#7c3aed',700:'#6d28d9',800:'#5b21b6',900:'#4c1d95',
+          }
+        },
+        fontFamily:{ sans:['Inter','system-ui','-apple-system','PingFang SC','Microsoft YaHei','sans-serif'] }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{ font-family:Inter,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; }
+  html,body{ height:100%; }
+  body{ -webkit-font-smoothing:antialiased; background:#FAFAFA; }
+
+  /* ===== 视口自适应 fluid 变量（核心：根据视口宽高动态调整） ===== */
+  :root{
+    --vh: 1vh;
+    --pad-x:    clamp(24px, 4vw, 60px);
+    --gap-col:  clamp(16px, 2vw, 32px);
+    --hero-1:   clamp(2.2rem, 4.5vw, 4.4rem);
+    --hero-2:   clamp(1.4rem, 2.8vw, 2.6rem);
+    --hero-desc:clamp(0.82rem, 0.9vw, 1rem);
+    --orb:      clamp(110px, 18vh, 180px);
+    --card-pad-y: clamp(6px, 1vh, 11px);
+    --feat-pad: clamp(10px, 1.6vh, 18px);
+    --login-pad: clamp(18px, 2.6vh, 30px);
+    --input-py: clamp(8px, 1.2vh, 12px);
+    --gap-section: clamp(12px, 2vh, 24px);
+  }
+
+  /* --- Decorative background --- */
+  .bg-deco{
+    position:absolute; inset:0; pointer-events:none; overflow:hidden;
+    background:
+      radial-gradient(600px 400px at 85% -10%, rgba(167,139,250,0.10), transparent 60%),
+      radial-gradient(500px 500px at 50% 50%, rgba(139,92,246,0.06), transparent 70%);
+  }
+
+  /* --- Gateway orb --- */
+  .gateway-orb{
+    width:var(--orb); height:var(--orb); border-radius:9999px; position:relative;
+    background:
+      radial-gradient(circle at 30% 26%,
+        #ffffff 0%, #f5f0ff 14%, #e2d9ff 32%, #c4b5fd 58%, #a78bfa 82%, #8b7cd9 100%);
+    box-shadow:
+      inset -10px -14px 30px rgba(124,58,237,0.30),
+      inset 8px 8px 22px rgba(255,255,255,0.85),
+      0 25px 60px rgba(139,92,246,0.28);
+  }
+  .gateway-orb::before{
+    content:''; position:absolute; top:14%; left:18%; width:40%; height:30%;
+    border-radius:9999px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.0) 70%);
+    filter: blur(2px); pointer-events:none;
+  }
+  .gateway-halo{
+    position:absolute; inset:calc(var(--orb) * -0.55); border-radius:9999px; pointer-events:none;
+    background: radial-gradient(circle, rgba(167,139,250,0.35) 0%, rgba(167,139,250,0.14) 40%, transparent 72%);
+    filter: blur(8px);
+  }
+  .gateway-ring{
+    position:absolute; border:1px dashed rgba(139,92,246,0.22); border-radius:9999px;
+    top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none;
+  }
+  @keyframes spin-slow{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
+  .ring-spin{ animation: spin-slow 50s linear infinite; }
+
+  @keyframes flow{ to{ stroke-dashoffset:-40; } }
+  .flow-line{ animation: flow 3.5s linear infinite; }
+
+  @keyframes pulse-dot{
+    0%,100%{ box-shadow:0 0 0 0 rgba(34,197,94,0.55); }
+    50%    { box-shadow:0 0 0 6px rgba(34,197,94,0); }
+  }
+  .pulse-dot{ animation: pulse-dot 2s infinite; }
+
+  @keyframes ping-purple{
+    0%,100%{ transform:scale(1); opacity:.8; }
+    50%    { transform:scale(1.5); opacity:.2; }
+  }
+  .endpoint-dot{ animation: ping-purple 2.2s ease-in-out infinite; }
+
+  .feat-card{ transition:all .2s ease; padding:var(--feat-pad); }
+  .feat-card:hover{ transform:translateY(-2px); box-shadow:0 10px 30px rgba(124,58,237,0.08); border-color:#ddd6fe; }
+
+  .input-field{ transition:all .15s ease; padding-top:var(--input-py); padding-bottom:var(--input-py); }
+  .input-field:focus{ outline:none; border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,0.12); }
+
+  .icon-btn{ transition:all .15s ease; padding-top:var(--input-py); padding-bottom:var(--input-py); }
+  .icon-btn:hover{ border-color:#c4b5fd; background-color:#f5f3ff; }
+
+  [data-lucide]{ width:1em; height:1em; stroke-width:2; vertical-align:-0.125em; }
+
+  .container-x{ max-width:100%; margin:0 auto; padding:0 var(--pad-x); }
+  @media (min-width:1024px){ .container-x{ max-width:1600px; } }
+  @media (min-width:1600px){ .container-x{ max-width:1720px; } }
+
+  .scrollbar-hide::-webkit-scrollbar{ display:none; }
+  .scrollbar-hide{ scrollbar-width:none; -ms-overflow-style:none; }
+
+  /* ===== Layout: 全屏 flex column，内容自动充满视口高度 ===== */
+  .page{ height:100vh; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+  .page > main{ flex:1; min-height:0; display:flex; align-items:stretch; }
+  .page > main .grid-row{
+    flex:1;
+    width:100%;
+    max-width:1600px;
+    margin:0 auto;
+    padding:0 var(--pad-x);
+    display:grid;
+    grid-template-columns:1fr;
+    gap:var(--gap-col);
+    align-items:stretch;
+  }
+  @media (min-width:1024px){
+    .page > main .grid-row{
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    }
+  }
+  @media (min-width:1024px) and (max-width:1279px){
+    .page > main .grid-row{
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr);
+      gap:20px;
+    }
+  }
+  @media (min-width:1280px) and (max-width:1439px){
+    .page > main .grid-row{
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+      gap:28px;
+    }
+  }
+
+  .hero-1{ font-size:var(--hero-1); line-height:1.04; letter-spacing:-0.02em; }
+  .hero-2{ font-size:var(--hero-2); line-height:1.1;  letter-spacing:-0.02em; }
+  .hero-desc{ font-size:var(--hero-desc); }
+
+  .model-card{ padding-top:var(--card-pad-y); padding-bottom:var(--card-pad-y); }
+  .login-card{ padding:var(--login-pad); }
+
+  /* mobile-only fade hint */
+  .fade-right{ position:relative; }
+  .fade-right::after{
+    content:''; position:absolute; right:0; top:0; bottom:0; width:32px;
+    background: linear-gradient(to left, #ffffff, transparent); pointer-events:none;
+  }
+
+  /* 非常窄屏（< 1024px）允许垂直滚动 */
+  @media (max-width:1023.98px){
+    body{ overflow:auto; }
+    .page{ height:auto; min-height:100vh; }
+    .page > main{ min-height:auto; }
+    .page > main .grid-row{ padding-top:20px; padding-bottom:20px; }
+  }
+  @media (max-width:767.98px){
+    .page > main .grid-row{ gap:20px; }
+    .feat-card{ padding:10px; }
+    .login-card{ padding:16px; }
+  }
+</style>
+</head>
+<body class="text-gray-900">
+<div class="page">
+
+<!-- Background -->
+<div class="bg-deco">
+  <svg class="absolute -right-32 -top-40 opacity-90" width="860" height="720" viewBox="0 0 860 720" fill="none">
+    <path d="M 860 30 Q 600 130 460 340 T 80 700" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="2 5" fill="none" opacity="0.55"/>
+    <path d="M 860 130 Q 570 230 420 450 T 60 800" stroke="#b9a7f7" stroke-width="1.2" stroke-dasharray="2 5" fill="none" opacity="0.45"/>
+    <path d="M 860 230 Q 540 320 400 540 T 80 900" stroke="#c4b5fd" stroke-width="1.1" stroke-dasharray="2 5" fill="none" opacity="0.35"/>
+    <circle cx="780" cy="60"  r="3.5" fill="#a78bfa"/>
+    <circle cx="620" cy="200" r="3"   fill="#8b5cf6"/>
+    <circle cx="460" cy="360" r="3"   fill="#a78bfa"/>
+    <circle cx="280" cy="540" r="2.5" fill="#c4b5fd"/>
+    <circle cx="120" cy="700" r="2"   fill="#c4b5fd"/>
+  </svg>
+</div>
+
+<!-- Header -->
+<header class="relative z-20 border-b border-gray-100/80 bg-white/70 backdrop-blur-md shrink-0">
+  <div class="container-x flex items-center justify-between" style="height:clamp(48px, 7vh, 64px)">
+    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+      <div class="rounded-lg overflow-hidden shrink-0 ring-1 ring-violet-500/30" style="width:clamp(28px,3.4vh,36px);height:clamp(28px,3.4vh,36px)">
+        <img src="anyhop.jpg" alt="AnyHop" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex items-baseline gap-2 min-w-0">
+        <span class="font-bold text-base sm:text-lg tracking-tight truncate">AnyHop AI</span>
+        <span class="text-xs sm:text-sm text-gray-500 hidden sm:inline">AI API Gateway</span>
+      </div>
+    </div>
+    <a href="index.html" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-gray-900 text-white text-xs sm:text-sm font-medium hover:bg-gray-800 transition shrink-0">
+      控制台
+      <i data-lucide="arrow-up-right" class="text-[14px]"></i>
+    </a>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="relative">
+  <div class="grid-row">
+
+    <!-- Left -->
+    <section class="order-1 flex flex-col justify-between" style="gap:var(--gap-section);padding-top:clamp(20px,4vh,40px);padding-bottom:clamp(20px,4vh,40px)">
+      <span class="self-start inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-medium border border-brand-100">
+        <i data-lucide="sparkles" class="text-[13px]"></i>
+        AI 连接，轻松无界
+      </span>
+
+      <div>
+        <h1 class="hero-1 font-extrabold tracking-tight">AnyHop AI</h1>
+        <p class="hero-2 text-gray-400 mt-1 font-bold tracking-tight">安品 AI</p>
+        <p class="hero-desc mt-3 text-gray-600 leading-relaxed">
+          统一接入
+          <span class="font-semibold text-gray-900">GPT</span> ·
+          <span class="font-semibold text-gray-900">Claude</span> ·
+          <span class="font-semibold text-gray-900">Gemini</span> ·
+          <span class="font-semibold text-gray-900">Image</span> 模型
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 sm:gap-3">
+        <div class="feat-card border border-gray-200/80 rounded-xl sm:rounded-2xl bg-white">
+          <div class="rounded-lg bg-brand-50 flex items-center justify-center text-brand-600" style="width:clamp(26px,3vh,32px);height:clamp(26px,3vh,32px);font-size:clamp(14px,1.6vh,17px);margin-bottom:clamp(6px,1vh,12px)">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <div class="font-bold" style="font-size:clamp(0.95rem,1.6vh,1.25rem)">99.9%</div>
+          <div class="text-gray-500 mt-0.5" style="font-size:clamp(10px,1.2vh,12px)">服务可用性</div>
+        </div>
+        <div class="feat-card border border-gray-200/80 rounded-xl sm:rounded-2xl bg-white">
+          <div class="rounded-lg bg-brand-50 flex items-center justify-center text-brand-600" style="width:clamp(26px,3vh,32px);height:clamp(26px,3vh,32px);font-size:clamp(14px,1.6vh,17px);margin-bottom:clamp(6px,1vh,12px)">
+            <i data-lucide="zap"></i>
+          </div>
+          <div class="font-bold" style="font-size:clamp(0.95rem,1.6vh,1.25rem)">&lt;80ms</div>
+          <div class="text-gray-500 mt-0.5" style="font-size:clamp(10px,1.2vh,12px)">平均延迟</div>
+        </div>
+        <div class="feat-card border border-gray-200/80 rounded-xl sm:rounded-2xl bg-white">
+          <div class="rounded-lg bg-brand-50 flex items-center justify-center text-brand-600" style="width:clamp(26px,3vh,32px);height:clamp(26px,3vh,32px);font-size:clamp(14px,1.6vh,17px);margin-bottom:clamp(6px,1vh,12px)">
+            <i data-lucide="globe-2"></i>
+          </div>
+          <div class="font-bold" style="font-size:clamp(0.85rem,1.4vh,1rem)">全球加速</div>
+          <div class="text-gray-500 mt-0.5" style="font-size:clamp(10px,1.2vh,12px)">稳定可靠</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Middle: Gateway -->
+    <section class="hidden lg:flex order-2 justify-center items-center relative" style="height:100%">
+      <svg class="absolute inset-0 w-full h-full" viewBox="0 0 420 560" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"  stop-color="#ddd6fe" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.75"/>
+          </linearGradient>
+        </defs>
+        <path class="flow-line" d="M 160 70  Q 260 90,  300 280" stroke="url(#lineGrad)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/>
+        <path class="flow-line" d="M 160 145 Q 250 170, 300 280" stroke="url(#lineGrad)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/>
+        <path class="flow-line" d="M 160 220 Q 240 250, 300 280" stroke="url(#lineGrad)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/>
+        <path class="flow-line" d="M 160 295 Q 240 290, 300 280" stroke="url(#lineGrad)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/>
+        <path class="flow-line" d="M 160 370 Q 240 330, 300 280" stroke="url(#lineGrad)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/>
+        <path class="flow-line" d="M 160 445 Q 240 380, 300 280" stroke="url(#lineGrad)" stroke-width="1.4" fill="none" stroke-dasharray="4 5"/>
+      </svg>
+
+      <div class="absolute left-0 z-10 flex flex-col" style="top:50%;transform:translateY(-50%);gap:clamp(6px,1.2vh,12px);width:clamp(150px,12vw,180px)">
+        <div class="model-card bg-white border border-gray-200 rounded-2xl px-3.5 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-md bg-black flex items-center justify-center">
+              <img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/openai.svg" class="w-4 h-4 invert" alt="OpenAI"/>
+            </div>
+            <span class="text-sm font-medium">GPT</span>
+          </div>
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-400 endpoint-dot"></span>
+        </div>
+        <div class="model-card bg-white border border-gray-200 rounded-2xl px-3.5 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-md bg-[#F5F0EA] flex items-center justify-center p-1">
+              <svg height="100%" style="flex:none;line-height:1" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg"><title>Claude</title><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"></path></svg>
+            </div>
+            <span class="text-sm font-medium">Claude</span>
+          </div>
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-400 endpoint-dot"></span>
+        </div>
+        <div class="model-card bg-white border border-gray-200 rounded-2xl px-3.5 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-md bg-white border border-gray-100 flex items-center justify-center p-0.5">
+              <img src="https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/gemini-color.svg" class="w-full h-full" alt="Gemini"/>
+            </div>
+            <span class="text-sm font-medium">Gemini</span>
+          </div>
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-400 endpoint-dot"></span>
+        </div>
+        <div class="model-card bg-white border border-gray-200 rounded-2xl px-3.5 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-md bg-brand-50 flex items-center justify-center text-brand-600">
+              <i data-lucide="image" class="text-[16px]"></i>
+            </div>
+            <span class="text-sm font-medium">Image</span>
+          </div>
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-400 endpoint-dot"></span>
+        </div>
+        <div class="model-card bg-white border border-gray-200 rounded-2xl px-3.5 flex items-center justify-between shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-md bg-white border border-gray-100 flex items-center justify-center p-0.5">
+              <img src="https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/deepseek-color.svg" class="w-full h-full" alt="DeepSeek"/>
+            </div>
+            <span class="text-sm font-medium">DeepSeek</span>
+          </div>
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-400 endpoint-dot"></span>
+        </div>
+        <div class="model-card border border-dashed border-gray-300 rounded-2xl px-3.5 flex items-center gap-2.5 text-gray-400 hover:border-brand-300 hover:text-brand-500 transition cursor-pointer">
+          <div class="w-7 h-7 rounded-md border border-dashed border-gray-300 flex items-center justify-center">
+            <i data-lucide="plus" class="text-[14px]"></i>
+          </div>
+          <span class="text-sm">接入更多模型</span>
+        </div>
+      </div>
+
+      <div class="absolute text-[11px] text-brand-700 font-medium bg-white/95 backdrop-blur border border-brand-100 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm z-20" style="right:-8px;top:14%">
+        <i data-lucide="activity" class="text-[12px]"></i> low latency
+      </div>
+      <div class="absolute text-[11px] text-brand-700 font-medium bg-white/95 backdrop-blur border border-brand-100 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm z-20" style="right:-24px;top:50%;transform:translateY(-50%)">
+        <i data-lucide="route" class="text-[12px]"></i> smart routing
+      </div>
+      <div class="absolute text-[11px] text-brand-700 font-medium bg-white/95 backdrop-blur border border-brand-100 px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm z-20" style="right:-8px;bottom:14%">
+        <i data-lucide="refresh-cw" class="text-[12px]"></i> quota sync
+      </div>
+
+      <div class="relative" style="transform: translateX(20px);">
+        <div class="gateway-ring ring-spin" style="width:calc(var(--orb) * 1.3);height:calc(var(--orb) * 1.3);"></div>
+        <div class="gateway-ring" style="width:calc(var(--orb) * 1.78);height:calc(var(--orb) * 1.78);"></div>
+        <div class="gateway-ring" style="width:calc(var(--orb) * 2.24);height:calc(var(--orb) * 2.24); border-color: rgba(139,92,246,0.10);"></div>
+        <div class="relative flex items-center justify-center">
+          <div class="gateway-halo"></div>
+          <div class="gateway-orb flex flex-col items-center justify-center">
+            <svg class="relative z-10 mb-1" width="36" height="36" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="8"  r="3" fill="#5b21b6"/>
+              <circle cx="7"  cy="22" r="3" fill="#6d28d9"/>
+              <circle cx="25" cy="22" r="3" fill="#6d28d9"/>
+              <line x1="16" y1="8" x2="7"  y2="22" stroke="#6d28d9" stroke-width="1.6" opacity="0.75"/>
+              <line x1="16" y1="8" x2="25" y2="22" stroke="#6d28d9" stroke-width="1.6" opacity="0.75"/>
+              <line x1="7"  y1="22" x2="25" y2="22" stroke="#6d28d9" stroke-width="1.6" opacity="0.75"/>
+            </svg>
+            <span class="relative z-10 text-[13px] font-semibold text-brand-800/85 tracking-wide">Gateway</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile-only compact strip -->
+    <section class="lg:hidden order-2">
+      <div class="rounded-2xl border border-gray-200 bg-white p-3.5 sm:p-4 shadow-[0_4px_16px_rgba(124,58,237,0.04)]">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full gateway-orb" style="width:28px;height:28px;"></div>
+            <span class="font-semibold text-sm">Gateway</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-green-600 bg-green-50 border border-green-100 px-1.5 py-0.5 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot"></span> Online
+            </span>
+          </div>
+        </div>
+        <div class="fade-right">
+          <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+            <span class="shrink-0 inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white">
+              <span class="w-4 h-4 rounded bg-black flex items-center justify-center"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/openai.svg" class="w-2.5 h-2.5 invert"/></span>GPT
+            </span>
+            <span class="shrink-0 inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white">
+              <span class="w-4 h-4 rounded bg-[#F5F0EA] flex items-center justify-center p-0.5"><svg height="100%" style="flex:none;line-height:1" viewBox="0 0 24 24" width="100%" xmlns="http://www.w3.org/2000/svg"><title>Claude</title><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"></path></svg></span>Claude
+            </span>
+            <span class="shrink-0 inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white">
+              <span class="w-4 h-4 rounded bg-white border border-gray-100 flex items-center justify-center p-px"><img src="https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/gemini-color.svg" class="w-full h-full"/></span>Gemini
+            </span>
+            <span class="shrink-0 inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white">
+              <span class="w-4 h-4 rounded bg-brand-50 text-brand-600 flex items-center justify-center"><i data-lucide="image" class="text-[11px]"></i></span>Image
+            </span>
+            <span class="shrink-0 inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white">
+              <span class="w-4 h-4 rounded bg-white border border-gray-100 flex items-center justify-center p-px"><img src="https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/deepseek-color.svg" class="w-full h-full"/></span>DeepSeek
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: Login -->
+    <section class="order-3 flex flex-col justify-center">
+      <div class="login-card bg-white rounded-2xl border border-gray-200/80 shadow-[0_10px_40px_rgba(124,58,237,0.06)]">
+        <div class="flex items-center justify-between mb-1">
+          <h2 class="font-bold" style="font-size:clamp(1.05rem,2vh,1.35rem)">登录控制台</h2>
+          <span class="inline-flex items-center gap-1.5 text-xs text-gray-500 bg-green-50 border border-green-100 px-2 py-0.5 rounded-full">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot"></span>
+            Gateway Online
+          </span>
+        </div>
+        <p class="text-gray-500" style="font-size:clamp(12px,1.5vh,14px);margin-bottom:clamp(14px,2.4vh,24px)">欢迎回来！请登录以继续使用 AnyHop AI</p>
+
+        <form class="flex flex-col" style="gap:clamp(10px,1.6vh,16px)">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">邮箱</label>
+            <div class="relative">
+              <i data-lucide="mail" class="text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="email" placeholder="请输入邮箱" class="input-field w-full pl-10 pr-3 border border-gray-300 rounded-lg text-sm" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">密码</label>
+            <div class="relative">
+              <i data-lucide="lock" class="text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="password" placeholder="请输入密码" class="input-field w-full pl-10 pr-10 border border-gray-300 rounded-lg text-sm" />
+              <i data-lucide="eye" class="text-[16px] text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer hover:text-gray-600"></i>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-sm">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 accent-brand-600" />
+              <span class="text-gray-600">记住我</span>
+            </label>
+            <a href="#" class="text-brand-600 font-medium hover:text-brand-700">忘记密码</a>
+          </div>
+
+          <button type="button" class="w-full bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800 transition inline-flex items-center justify-center gap-2" style="padding-top:clamp(10px,1.5vh,14px);padding-bottom:clamp(10px,1.5vh,14px)">
+            <i data-lucide="log-in" class="text-[16px]"></i>
+            登录控制台
+          </button>
+
+          <div class="flex items-center gap-3">
+            <div class="h-px flex-1 bg-gray-200"></div>
+            <span class="text-xs text-gray-400">或使用 API Token 接入</span>
+            <div class="h-px flex-1 bg-gray-200"></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <a href="docs.html" class="icon-btn flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-xs text-gray-700">
+              <i data-lucide="book-open" class="text-[15px]"></i>
+              API 文档
+            </a>
+            <a href="index.html" class="icon-btn flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-xs text-gray-700">
+              <i data-lucide="key-round" class="text-[15px]"></i>
+              获取 Token
+            </a>
+            <a href="index.html" class="icon-btn flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-xs text-gray-700">
+              <i data-lucide="bar-chart-3" class="text-[15px]"></i>
+              状态页
+            </a>
+          </div>
+
+          <p class="text-xs text-center text-gray-500">
+            还没有账户？
+            <a href="#" class="text-brand-600 font-medium hover:text-brand-700">立即注册</a>
+          </p>
+        </form>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="relative border-t border-gray-100 bg-white/50 shrink-0">
+  <div class="container-x flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-gray-500 gap-3" style="padding-top:clamp(8px,1.4vh,16px);padding-bottom:clamp(8px,1.4vh,16px)">
+    <div>© 2026 AnyHop AI. 保留所有权利.</div>
+    <div class="flex items-center gap-4 sm:gap-5">
+      <a href="docs.html" class="hover:text-gray-900">文档</a>
+      <a href="terms.html" class="hover:text-gray-900">服务条款</a>
+      <a href="privacy.html" class="hover:text-gray-900">隐私政策</a>
+      <a href="policy.html" class="hover:text-gray-900">使用政策</a>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+  if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>

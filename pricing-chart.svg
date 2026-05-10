@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Segoe UI',sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.06"/>
+    </filter>
+    <filter id="shadowLg">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bgGrad)" rx="16"/>
+
+  <!-- Title -->
+  <text x="60" y="52" font-size="22" font-weight="800" fill="#111827" letter-spacing="-0.5">AnPin AI 模型倍率价格表</text>
+  <text x="60" y="76" font-size="13" fill="#6b7280">价格单位：$/M tokens（每百万 Token）| 汇率 ¥1 = $1</text>
+
+  <!-- GPT Section Header -->
+  <rect x="40" y="100" width="1120" height="32" rx="8" fill="#f0fdf4"/>
+  <circle cx="62" cy="116" r="6" fill="#16a34a"/>
+  <text x="78" y="121" font-size="13" font-weight="700" fill="#16a34a">GPT 模型 — 0.15x 专属通道</text>
+  <text x="320" y="121" font-size="11" fill="#6b7280">（gpt5.5 and gpt-image-2 分组）</text>
+
+  <!-- GPT Table Header -->
+  <rect x="40" y="140" width="1120" height="30" rx="0" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="60" y="160" font-size="11" font-weight="700" fill="#6b7280">模型</text>
+  <text x="280" y="160" font-size="11" font-weight="700" fill="#6b7280">输入(官方)</text>
+  <text x="400" y="160" font-size="11" font-weight="700" fill="#6b7280">输出(官方)</text>
+  <text x="520" y="160" font-size="11" font-weight="700" fill="#6b7280">缓存读取(官方)</text>
+  <text x="680" y="160" font-size="11" font-weight="700" fill="#16a34a">0.15x 输入</text>
+  <text x="800" y="160" font-size="11" font-weight="700" fill="#16a34a">0.15x 输出</text>
+  <text x="920" y="160" font-size="11" font-weight="700" fill="#16a34a">0.15x 缓存读取</text>
+  <text x="1070" y="160" font-size="11" font-weight="700" fill="#6b7280">每1M约</text>
+
+  <!-- GPT Row 1: gpt-5.5 -->
+  <rect x="40" y="170" width="1120" height="34" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="192" font-size="12" font-weight="700" fill="#111827">gpt-5.5</text>
+  <text x="280" y="192" font-size="12" font-weight="600" fill="#374151">$5.00</text>
+  <text x="400" y="192" font-size="12" font-weight="600" fill="#374151">$25.00</text>
+  <text x="520" y="192" font-size="12" font-weight="600" fill="#374151">$1.250</text>
+  <text x="680" y="192" font-size="12" font-weight="700" fill="#16a34a">$0.75</text>
+  <text x="800" y="192" font-size="12" font-weight="700" fill="#16a34a">$3.75</text>
+  <text x="920" y="192" font-size="12" font-weight="700" fill="#16a34a">$0.188</text>
+  <text x="1070" y="192" font-size="12" font-weight="700" fill="#16a34a">~$0.75</text>
+
+  <!-- GPT Row 2: gpt-5.4 -->
+  <rect x="40" y="204" width="1120" height="34" fill="#fafffe" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="226" font-size="12" font-weight="700" fill="#111827">gpt-5.4</text>
+  <text x="280" y="226" font-size="12" font-weight="600" fill="#374151">$2.50</text>
+  <text x="400" y="226" font-size="12" font-weight="600" fill="#374151">$15.00</text>
+  <text x="520" y="226" font-size="12" font-weight="600" fill="#374151">$0.250</text>
+  <text x="680" y="226" font-size="12" font-weight="700" fill="#16a34a">$0.375</text>
+  <text x="800" y="226" font-size="12" font-weight="700" fill="#16a34a">$2.25</text>
+  <text x="920" y="226" font-size="12" font-weight="700" fill="#16a34a">$0.038</text>
+  <text x="1070" y="226" font-size="12" font-weight="700" fill="#16a34a">~$0.38</text>
+
+  <!-- GPT Row 3: gpt-5.4-mini -->
+  <rect x="40" y="238" width="1120" height="34" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="260" font-size="12" font-weight="700" fill="#111827">gpt-5.4-mini</text>
+  <text x="280" y="260" font-size="12" font-weight="600" fill="#374151">$0.750</text>
+  <text x="400" y="260" font-size="12" font-weight="600" fill="#374151">$4.50</text>
+  <text x="520" y="260" font-size="12" font-weight="600" fill="#374151">$0.075</text>
+  <text x="680" y="260" font-size="12" font-weight="700" fill="#16a34a">$0.113</text>
+  <text x="800" y="260" font-size="12" font-weight="700" fill="#16a34a">$0.675</text>
+  <text x="920" y="260" font-size="12" font-weight="700" fill="#16a34a">$0.011</text>
+  <text x="1070" y="260" font-size="12" font-weight="700" fill="#16a34a">~$0.11</text>
+
+  <!-- GPT Row 4: gpt-image-2 -->
+  <rect x="40" y="272" width="1120" height="34" fill="#fafffe" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="294" font-size="12" font-weight="700" fill="#111827">gpt-image-2</text>
+  <text x="280" y="294" font-size="12" font-weight="600" fill="#374151">$0.100</text>
+  <text x="400" y="294" font-size="12" font-weight="600" fill="#374151">$0.100</text>
+  <text x="520" y="294" font-size="12" font-weight="600" fill="#374151">$2.000</text>
+  <text x="680" y="294" font-size="12" font-weight="700" fill="#16a34a">$0.015</text>
+  <text x="800" y="294" font-size="12" font-weight="700" fill="#16a34a">$0.015</text>
+  <text x="920" y="294" font-size="12" font-weight="700" fill="#16a34a">$0.300</text>
+  <text x="1070" y="294" font-size="12" font-weight="700" fill="#16a34a">~$0.02</text>
+
+  <!-- Claude Section Header -->
+  <rect x="40" y="330" width="1120" height="32" rx="8" fill="#fff7ed"/>
+  <circle cx="62" cy="346" r="6" fill="#ea580c"/>
+  <text x="78" y="351" font-size="13" font-weight="700" fill="#ea580c">Claude 模型 — 多通道倍率</text>
+
+  <!-- Claude Table Header -->
+  <rect x="40" y="370" width="1120" height="30" rx="0" fill="#f9fafb" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="60" y="390" font-size="11" font-weight="700" fill="#6b7280">模型</text>
+  <text x="220" y="390" font-size="11" font-weight="700" fill="#6b7280">类型</text>
+  <text x="310" y="390" font-size="11" font-weight="700" fill="#6b7280">官方</text>
+  <text x="410" y="390" font-size="11" font-weight="700" fill="#16a34a">0.4x</text>
+  <text x="510" y="390" font-size="11" font-weight="700" fill="#d97706">0.6x</text>
+  <text x="610" y="390" font-size="11" font-weight="700" fill="#d97706">0.7x</text>
+  <text x="710" y="390" font-size="11" font-weight="700" fill="#dc2626">2.0x</text>
+  <text x="830" y="390" font-size="10" font-weight="600" fill="#6b7280">0.4x=cc逆向</text>
+  <text x="940" y="390" font-size="10" font-weight="600" fill="#6b7280">0.6x=小池池</text>
+  <text x="1050" y="390" font-size="10" font-weight="600" fill="#6b7280">0.7x=低延迟高缓存</text>
+
+  <!-- Claude: Sonnet 4-6 -->
+  <rect x="40" y="400" width="1120" height="28" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="419" font-size="11.5" font-weight="700" fill="#111827">claude-sonnet-4-6</text>
+  <text x="220" y="419" font-size="11" fill="#6b7280">输入</text>
+  <text x="310" y="419" font-size="11.5" font-weight="600" fill="#374151">$3.00</text>
+  <text x="410" y="419" font-size="11.5" font-weight="700" fill="#16a34a">$1.20</text>
+  <text x="510" y="419" font-size="11.5" font-weight="700" fill="#d97706">$1.80</text>
+  <text x="610" y="419" font-size="11.5" font-weight="700" fill="#d97706">$2.10</text>
+  <text x="710" y="419" font-size="11.5" font-weight="700" fill="#dc2626">$6.00</text>
+
+  <rect x="40" y="428" width="1120" height="28" fill="#fffcf8" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="447" font-size="11.5" font-weight="700" fill="#111827">claude-sonnet-4-6</text>
+  <text x="220" y="447" font-size="11" fill="#6b7280">输出</text>
+  <text x="310" y="447" font-size="11.5" font-weight="600" fill="#374151">$15.00</text>
+  <text x="410" y="447" font-size="11.5" font-weight="700" fill="#16a34a">$6.00</text>
+  <text x="510" y="447" font-size="11.5" font-weight="700" fill="#d97706">$9.00</text>
+  <text x="610" y="447" font-size="11.5" font-weight="700" fill="#d97706">$10.50</text>
+  <text x="710" y="447" font-size="11.5" font-weight="700" fill="#dc2626">$30.00</text>
+
+  <rect x="40" y="456" width="1120" height="28" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="475" font-size="11.5" font-weight="700" fill="#111827">claude-sonnet-4-6</text>
+  <text x="220" y="475" font-size="11" fill="#6b7280">缓存写入</text>
+  <text x="310" y="475" font-size="11.5" font-weight="600" fill="#374151">$3.75</text>
+  <text x="410" y="475" font-size="11.5" font-weight="700" fill="#16a34a">$1.50</text>
+  <text x="510" y="475" font-size="11.5" font-weight="700" fill="#d97706">$2.25</text>
+  <text x="610" y="475" font-size="11.5" font-weight="700" fill="#d97706">$2.63</text>
+  <text x="710" y="475" font-size="11.5" font-weight="700" fill="#dc2626">$7.50</text>
+
+  <rect x="40" y="484" width="1120" height="28" fill="#fffcf8" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="503" font-size="11.5" font-weight="700" fill="#111827">claude-sonnet-4-6</text>
+  <text x="220" y="503" font-size="11" fill="#6b7280">缓存读取</text>
+  <text x="310" y="503" font-size="11.5" font-weight="600" fill="#374151">$0.30</text>
+  <text x="410" y="503" font-size="11.5" font-weight="700" fill="#16a34a">$0.12</text>
+  <text x="510" y="503" font-size="11.5" font-weight="700" fill="#d97706">$0.18</text>
+  <text x="610" y="503" font-size="11.5" font-weight="700" fill="#d97706">$0.21</text>
+  <text x="710" y="503" font-size="11.5" font-weight="700" fill="#dc2626">$0.60</text>
+
+  <!-- Claude: Opus 4-7 -->
+  <rect x="40" y="518" width="1120" height="28" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="537" font-size="11.5" font-weight="700" fill="#111827">claude-opus-4-7</text>
+  <text x="220" y="537" font-size="11" fill="#6b7280">输入</text>
+  <text x="310" y="537" font-size="11.5" font-weight="600" fill="#374151">$5.00</text>
+  <text x="410" y="537" font-size="11.5" font-weight="700" fill="#16a34a">$2.00</text>
+  <text x="510" y="537" font-size="11.5" font-weight="700" fill="#d97706">$3.00</text>
+  <text x="610" y="537" font-size="11.5" font-weight="700" fill="#d97706">$3.50</text>
+  <text x="710" y="537" font-size="11.5" font-weight="700" fill="#dc2626">$10.00</text>
+
+  <rect x="40" y="546" width="1120" height="28" fill="#fffcf8" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="565" font-size="11.5" font-weight="700" fill="#111827">claude-opus-4-7</text>
+  <text x="220" y="565" font-size="11" fill="#6b7280">输出</text>
+  <text x="310" y="565" font-size="11.5" font-weight="600" fill="#374151">$25.00</text>
+  <text x="410" y="565" font-size="11.5" font-weight="700" fill="#16a34a">$10.00</text>
+  <text x="510" y="565" font-size="11.5" font-weight="700" fill="#d97706">$15.00</text>
+  <text x="610" y="565" font-size="11.5" font-weight="700" fill="#d97706">$17.50</text>
+  <text x="710" y="565" font-size="11.5" font-weight="700" fill="#dc2626">$50.00</text>
+
+  <rect x="40" y="574" width="1120" height="28" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="593" font-size="11.5" font-weight="700" fill="#111827">claude-opus-4-7</text>
+  <text x="220" y="593" font-size="11" fill="#6b7280">缓存写入</text>
+  <text x="310" y="593" font-size="11.5" font-weight="600" fill="#374151">$6.25</text>
+  <text x="410" y="593" font-size="11.5" font-weight="700" fill="#16a34a">$2.50</text>
+  <text x="510" y="593" font-size="11.5" font-weight="700" fill="#d97706">$3.75</text>
+  <text x="610" y="593" font-size="11.5" font-weight="700" fill="#d97706">$4.38</text>
+  <text x="710" y="593" font-size="11.5" font-weight="700" fill="#dc2626">$12.50</text>
+
+  <rect x="40" y="602" width="1120" height="28" fill="#fffcf8" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="621" font-size="11.5" font-weight="700" fill="#111827">claude-opus-4-7</text>
+  <text x="220" y="621" font-size="11" fill="#6b7280">缓存读取</text>
+  <text x="310" y="621" font-size="11.5" font-weight="600" fill="#374151">$0.50</text>
+  <text x="410" y="621" font-size="11.5" font-weight="700" fill="#16a34a">$0.20</text>
+  <text x="510" y="621" font-size="11.5" font-weight="700" fill="#d97706">$0.30</text>
+  <text x="610" y="621" font-size="11.5" font-weight="700" fill="#d97706">$0.35</text>
+  <text x="710" y="621" font-size="11.5" font-weight="700" fill="#dc2626">$1.00</text>
+
+  <!-- Claude: Haiku -->
+  <rect x="40" y="636" width="1120" height="28" fill="white" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="655" font-size="11.5" font-weight="700" fill="#111827">claude-haiku-4-5</text>
+  <text x="220" y="655" font-size="11" fill="#6b7280">输入</text>
+  <text x="310" y="655" font-size="11.5" font-weight="600" fill="#374151">$1.00</text>
+  <text x="410" y="655" font-size="11.5" font-weight="700" fill="#16a34a">$0.40</text>
+  <text x="510" y="655" font-size="11.5" font-weight="700" fill="#d97706">$0.60</text>
+  <text x="610" y="655" font-size="11.5" font-weight="700" fill="#d97706">$0.70</text>
+  <text x="710" y="655" font-size="11.5" font-weight="700" fill="#dc2626">$2.00</text>
+
+  <rect x="40" y="664" width="1120" height="28" fill="#fffcf8" stroke="#e5e7eb" stroke-width="0.5"/>
+  <text x="60" y="683" font-size="11.5" font-weight="700" fill="#111827">claude-haiku-4-5</text>
+  <text x="220" y="683" font-size="11" fill="#6b7280">输出</text>
+  <text x="310" y="683" font-size="11.5" font-weight="600" fill="#374151">$5.00</text>
+  <text x="410" y="683" font-size="11.5" font-weight="700" fill="#16a34a">$2.00</text>
+  <text x="510" y="683" font-size="11.5" font-weight="700" fill="#d97706">$3.00</text>
+  <text x="610" y="683" font-size="11.5" font-weight="700" fill="#d97706">$3.50</text>
+  <text x="710" y="683" font-size="11.5" font-weight="700" fill="#dc2626">$10.00</text>
+
+  <!-- Legend -->
+  <rect x="40" y="720" width="1120" height="60" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1" filter="url(#shadow)"/>
+  <text x="60" y="745" font-size="11" font-weight="700" fill="#111827">通道说明：</text>
+  <rect x="150" y="735" width="10" height="10" rx="2" fill="#16a34a"/>
+  <text x="166" y="745" font-size="10.5" fill="#374151">0.15x GPT专属 | 0.4x cc逆向</text>
+  <rect x="400" y="735" width="10" height="10" rx="2" fill="#d97706"/>
+  <text x="416" y="745" font-size="10.5" fill="#374151">0.6x 小池池 | 0.7x cc逆向低延迟高缓存</text>
+  <rect x="700" y="735" width="10" height="10" rx="2" fill="#dc2626"/>
+  <text x="716" y="745" font-size="10.5" fill="#374151">2.0x 自建号池满血cc_max</text>
+  <text x="60" y="766" font-size="10" fill="#9ca3af">倍率 = 实际消费 ÷ 官方标准价格 | 汇率 ¥1 = $1（平台内部结算）| 实际扣费以平台显示为准</text>
+</svg>

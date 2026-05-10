@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系客服 - AnyHop AI</title>
+    <style>
+        :root{--bg:#fafafa;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--accent:#8b5cf6;--accent2:#6d28d9;--card:#ffffff}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.25)}50%{box-shadow:0 0 0 10px rgba(16,185,129,0)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+        .page{flex:1;display:flex;flex-direction:column;align-items:center;padding:40px 20px 30px}
+
+        .header{text-align:center;margin-bottom:40px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+        .header-icon{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 10px 30px rgba(139,92,246,.25);animation:float 3s ease-in-out infinite}
+        .header-icon svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+        .header h1{font-size:1.6rem;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+        .header p{font-size:.88rem;color:var(--muted);line-height:1.6;max-width:360px;margin:0 auto}
+
+        .online-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);padding:3px 12px 3px 8px;border-radius:20px;font-size:.72rem;font-weight:600;color:#059669}
+        .online-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#10b981;animation:pulse 2s ease infinite}
+
+        .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:560px;width:100%;margin-bottom:36px}
+
+        .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px 24px;text-align:center;transition:all .35s cubic-bezier(.22,1,.36,1);animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;position:relative;overflow:hidden}
+        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0}
+        .card:nth-child(1){animation-delay:.1s}
+        .card:nth-child(1)::before{background:linear-gradient(90deg,#10b981,#34d399)}
+        .card:nth-child(2){animation-delay:.15s}
+        .card:nth-child(2)::before{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+        .card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.07);border-color:#d1d5db}
+
+        .card-avatar{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+        .card-avatar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+        .card-avatar.a1{background:linear-gradient(135deg,#f0fdf4,#dcfce7);color:#16a34a}
+        .card-avatar.a2{background:linear-gradient(135deg,#eff6ff,#dbeafe);color:#2563eb}
+
+        .card-label{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px}
+
+        /* =======================================
+           核心交互区：纯 CSS 实现的动态复制按钮
+           ======================================= */
+        .copy-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .modern-copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+            outline: none;
+            /* 点击一键全选文本 */
+            user-select: all;
+            -webkit-user-select: all;
+        }
+        .modern-copy-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 6px 16px rgba(139,92,246,.08);
+            transform: translateY(-2px);
+        }
+        /* 选中时的动画反馈 */
+        .modern-copy-btn:active,
+        .modern-copy-btn:focus {
+            border-color: #10b981;
+            background: rgba(16,185,129,.04);
+            transform: translateY(0);
+            box-shadow: 0 0 0 3px rgba(16,185,129,.15);
+        }
+        .modern-copy-btn:focus .copy-icon {
+            color: #10b981;
+        }
+        .wechat-id {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            font-family: "SF Mono", "Fira Code", monospace;
+        }
+        .copy-icon {
+            display: flex;
+            align-items: center;
+            color: var(--muted);
+            transition: color 0.3s;
+            /* 阻止图标被选中，避免复制出多余字符 */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .copy-icon svg {
+            width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* 弹出的精美 Toast 提示框 */
+        .copy-toast {
+            position: absolute;
+            top: -46px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px) scale(0.95);
+            background: #111827;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(.22,1,.36,1);
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        .copy-toast::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 10px;
+            height: 10px;
+            background: #111827;
+        }
+        /* 点击(focus)触发气泡弹出 */
+        .modern-copy-btn:focus + .copy-toast,
+        .modern-copy-btn:active + .copy-toast {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+
+        /* ======================================= */
+
+        .qr-section{max-width:560px;width:100%;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .2s both}
+        .qr-title{font-size:.85rem;font-weight:700;text-align:center;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted)}
+        .qr-title::before,.qr-title::after{content:'';flex:1;max-width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--border))}
+        .qr-title::after{background:linear-gradient(90deg,var(--border),transparent)}
+
+        .qr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+        .qr-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;text-align:center;transition:all .35s cubic-bezier(.22,1,.36,1)}
+        .qr-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.06)}
+
+        .qr-img-wrap{width:180px;height:180px;border-radius:14px;margin:0 auto 14px;overflow:hidden;background:#f9fafb;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:border-color .3s}
+        .qr-card:hover .qr-img-wrap{border-color:#c4b5fd}
+        .qr-img{width:100%;height:100%;object-fit:cover;display:block}
+
+        .qr-card-label{font-size:.82rem;color:var(--text);font-weight:600}
+        .qr-card-sub{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+        .notice{max-width:560px;width:100%;margin-top:32px;padding:18px 22px;border-radius:14px;background:linear-gradient(135deg,rgba(139,92,246,.04),rgba(99,102,241,.02));border:1px solid rgba(139,92,246,.1);display:flex;align-items:flex-start;gap:12px;font-size:.82rem;color:var(--muted);line-height:1.7;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .25s both}
+        .notice-icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:2px}
+
+        @media(max-width:500px){
+            .cards{grid-template-columns:1fr}
+            .qr-grid{grid-template-columns:1fr}
+            .page{padding:28px 16px 20px}
+            .qr-img-wrap{width:200px;height:200px}
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="header">
+        <div class="header-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h4" opacity=".5"/></svg>
+        </div>
+        <h1>联系客服 <span class="online-badge">在线</span></h1>
+        <p>添加微信客服，获取专业技术支持与售后服务</p>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-avatar a1">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="card-label">专属客服 1</div>
+            
+            <div class="copy-wrapper">
+                <div class="modern-copy-btn" tabindex="0" title="点击全选">
+                    <span class="wechat-id">an474784307</span>
+                    <span class="copy-icon">
+                        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </span>
+                </div>
+                <div class="copy-toast">✅ 已全选，请按 Ctrl+C 复制</div>
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-avatar a2">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="card-label">专属客服 2</div>
+            
+            <div class="copy-wrapper">
+                <div class="modern-copy-btn" tabindex="0" title="点击全选">
+                    <span class="wechat-id">ggxz778</span>
+                    <span class="copy-icon">
+                        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </span>
+                </div>
+                <div class="copy-toast">✅ 已全选，请按 Ctrl+C 复制</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="qr-section">
+        <div class="qr-title">扫码添加</div>
+        <div class="qr-grid">
+            <div class="qr-card">
+                <div class="qr-img-wrap">
+                    <img class="qr-img" src="data:image/png;base64,在这替换群二维码的Base64" alt="微信群二维码">
+                </div>
+                <div class="qr-card-label">微信群</div>
+                <div class="qr-card-sub">扫码加入用户交流群</div>
+            </div>
+            <div class="qr-card">
+                <div class="qr-img-wrap">
+                    <img class="qr-img" src="data:image/png;base64,在这替换客服二维码的Base64" alt="客服二维码">
+                </div>
+                <div class="qr-card-label">微信客服</div>
+                <div class="qr-card-sub">扫码添加专属客服</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notice">
+        <div class="notice-icon">!</div>
+        <div>工作时间：每天 9:00 - 23:00。添加微信后请备注「AnyHop AI」以便快速通过验证。如遇紧急问题，请优先联系客服 1。</div>
+    </div>
+</div>
+</body>
+</html>

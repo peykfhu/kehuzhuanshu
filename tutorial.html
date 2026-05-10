@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速上手 - AnyHop AI</title>
+    <style>
+        :root{--bg:#fafafa;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--accent:#8b5cf6;--card:#fff;--nav-bg:rgba(255,255,255,.72)}
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}a{text-decoration:none;color:inherit}
+        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+        [data-lang="en"] .zh{display:none!important}
+        [data-lang="zh"] .en{display:none!important}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .page{min-height:100vh;display:flex;flex-direction:column}
+
+        .nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;position:relative;z-index:10;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+        .nav-logo{font-size:1.15rem;font-weight:800;display:flex;align-items:center;gap:10px;letter-spacing:-.5px;transition:opacity .3s}
+        .nav-logo:hover{opacity:.8}
+        .logo-img{width:30px;height:30px;border-radius:7px;object-fit:cover}
+        .nav-links{display:flex;gap:20px;align-items:center;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:8px 26px;border-radius:40px;border:1px solid rgba(0,0,0,.04);box-shadow:0 2px 12px rgba(0,0,0,.03);font-size:.86rem;font-weight:500}
+        .nav-links a{color:var(--muted);transition:all .3s cubic-bezier(.22,1,.36,1);position:relative}
+        .nav-links a:hover,.nav-links a.active{color:var(--accent)}
+        .nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent)}
+        .nav-right{display:flex;align-items:center;gap:10px}
+        .lang-btn{background:none;border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .3s;font-family:inherit}
+        .lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .btn-console{background:linear-gradient(135deg,#18181b,#27272a);color:#fff;padding:8px 22px;border-radius:30px;font-size:.86rem;font-weight:600;transition:all .35s cubic-bezier(.22,1,.36,1)}
+        .btn-console:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+
+        .container{max-width:820px;margin:0 auto;padding:0 24px;flex:1}
+        .page-header{text-align:center;padding:50px 0 36px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .1s both}
+        .page-header h1{font-size:2.2rem;font-weight:800;letter-spacing:-1px;margin-bottom:8px}
+        .page-header p{color:var(--muted);font-size:.95rem}
+
+        .step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:16px;transition:all .35s cubic-bezier(.22,1,.36,1);animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+        .step:nth-child(1){animation-delay:.15s}.step:nth-child(2){animation-delay:.2s}
+        .step:nth-child(3){animation-delay:.25s}.step:nth-child(4){animation-delay:.3s}
+        .step:nth-child(5){animation-delay:.35s}.step:nth-child(6){animation-delay:.4s}
+        .step:nth-child(7){animation-delay:.45s}
+        .step:hover{box-shadow:0 8px 24px rgba(0,0,0,.05);border-color:#d1d5db;transform:translateY(-2px)}
+        .step-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+        .step-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#6d28d9);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0;transition:transform .3s}
+        .step:hover .step-num{transform:scale(1.08)}
+        .step-title{font-size:1.08rem;font-weight:700}
+        .step p{color:#4b5563;font-size:.88rem;line-height:1.75;margin-bottom:12px}
+        .step p:last-child{margin-bottom:0}
+
+        pre{background:#0f172a;color:#e2e8f0;padding:16px 20px;border-radius:10px;overflow-x:auto;font-size:.79rem;line-height:1.7;margin:12px 0;border:1px solid rgba(255,255,255,.06);transition:box-shadow .3s}
+        pre:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+        code{font-family:"SF Mono","Fira Code",Menlo,monospace}
+        .inline-code{background:#f3f4f6;padding:2px 8px;border-radius:6px;font-size:.82rem;font-family:"SF Mono","Fira Code",Menlo,monospace;color:#be185d}
+        .comment{color:#64748b}
+
+        .tip{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:.84rem;color:#166534;margin:12px 0;display:flex;align-items:flex-start;gap:8px;line-height:1.65}
+        .warn{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:.84rem;color:#92400e;margin:12px 0;line-height:1.65}
+
+        .tab-group{margin:16px 0}
+        .tabs{display:flex;gap:2px;margin-bottom:0;flex-wrap:wrap}
+        .tab-btn{padding:8px 16px;font-size:.78rem;font-weight:600;border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;background:#f9fafb;color:var(--muted);cursor:pointer;transition:all .25s cubic-bezier(.22,1,.36,1)}
+        .tab-btn:hover{color:var(--text)}
+        .tab-btn.active{background:#0f172a;color:#e2e8f0;border-color:#0f172a}
+        .tab-content{display:none}
+        .tab-content.active{display:block}
+        .tab-content pre{margin-top:0;border-radius:0 10px 10px 10px}
+
+        .feature-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+        .feature-item{display:flex;align-items:center;gap:8px;font-size:.84rem;color:#4b5563;padding:6px 0}
+        .check{color:#10b981;font-weight:bold}
+
+        .cta{text-align:center;padding:40px 0 60px;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .5s both}
+        .btn-main{background:linear-gradient(135deg,#18181b,#1f1f23);color:#fff;font-size:.95rem;padding:14px 34px;border-radius:12px;font-weight:600;transition:all .35s cubic-bezier(.22,1,.36,1);display:inline-block;box-shadow:0 6px 16px rgba(0,0,0,.1);position:relative;overflow:hidden}
+        .btn-main::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,92,246,.2),transparent);opacity:0;transition:opacity .35s}
+        .btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.15)}
+        .btn-main:hover::before{opacity:1}
+
+        .footer-wrap{border-top:1px solid var(--border);padding:20px 24px;margin-top:auto}
+        .footer{max-width:820px;margin:0 auto;display:flex;justify-content:space-between;font-size:.78rem;color:#9ca3af;flex-wrap:wrap;gap:10px}
+        .footer-links{display:flex;gap:20px}
+        .footer-links a{transition:color .3s}
+        .footer-links a:hover{color:var(--accent)}
+
+        @media(max-width:768px){
+            .nav{padding:14px 16px;flex-wrap:wrap;gap:10px}.nav-links{display:none}
+            .page-header h1{font-size:1.8rem}
+            .feature-list{grid-template-columns:1fr}
+            .footer{flex-direction:column;align-items:center;text-align:center}
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header class="nav">
+        <a href="index.html" class="nav-logo"><img src="anyhop.jpg" alt="AnyHop AI" class="logo-img"> AnyHop AI</a>
+        <nav class="nav-links">
+            <a href="index.html"><span class="zh">首页</span><span class="en">Home</span></a>
+            <a href="pricing.html"><span class="zh">模型广场</span><span class="en">Models</span></a>
+            <a href="tutorial.html" class="active"><span class="zh">教程</span><span class="en">Tutorial</span></a>
+            <a href="docs.html"><span class="zh">文档</span><span class="en">Docs</span></a>
+        </nav>
+        <div class="nav-right">
+            <button class="lang-btn" onclick="toggleLang()"><span class="zh">EN</span><span class="en">中文</span></button>
+            <a href="index.html" class="btn-console"><span class="zh">控制台 ↗</span><span class="en">Console ↗</span></a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><span class="zh">快速上手</span><span class="en">Quick Start</span></h1>
+            <p><span class="zh">几分钟内完成接入，开始使用 AnyHop AI 的大模型 API 服务</span><span class="en">Get started with AnyHop AI's LLM API service in minutes</span></p>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">1</div><div class="step-title"><span class="zh">注册账号并获取 API Key</span><span class="en">Register & Get API Key</span></div></div>
+            <p><span class="zh">点击右上角「控制台」按钮，使用邮箱注册 AnyHop AI 账号。注册完成后登录控制台，在「API Keys」页面点击「创建 API Key」。</span><span class="en">Click the "Console" button in the top right corner, register with your email. After login, go to "API Keys" page and click "Create API Key".</span></p>
+            <div class="warn"><span class="zh">⚠️ API Key 仅在创建时显示一次，请立即复制保存到安全位置。如果遗失，需要重新创建。</span><span class="en">⚠️ The API Key is shown only once upon creation. Copy and save it immediately. If lost, you'll need to create a new one.</span></div>
+            <p><span class="zh">你的 API Key 格式如下：</span><span class="en">Your API Key format:</span></p>
+            <pre><code>sk-anyhop-xxxxxxxxxxxxxxxxxxxx</code></pre>
+            <div class="tip"><span class="zh">💡 注册后即赠送免费额度，可直接体验所有模型，无需充值即可开始。</span><span class="en">💡 Free credits are given upon registration. Start using all models without any payment.</span></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">2</div><div class="step-title"><span class="zh">安装 SDK</span><span class="en">Install SDK</span></div></div>
+            <p><span class="zh">AnyHop AI 同时兼容 Anthropic 和 OpenAI SDK，根据你的需求选择安装：</span><span class="en">AnyHop AI is compatible with both Anthropic and OpenAI SDKs. Install based on your needs:</span></p>
+
+            <div class="tab-group">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(this,'sdk-python')">Python</button>
+                    <button class="tab-btn" onclick="switchTab(this,'sdk-node')">Node.js</button>
+                    <button class="tab-btn" onclick="switchTab(this,'sdk-go')">Go</button>
+                </div>
+                <div class="tab-content active" id="sdk-python">
+                    <pre><code><span class="comment"># Anthropic SDK (recommended)</span>
+pip install anthropic
+
+<span class="comment"># Or OpenAI SDK</span>
+pip install openai</code></pre>
+                </div>
+                <div class="tab-content" id="sdk-node">
+                    <pre><code><span class="comment"># Anthropic SDK</span>
+npm install @anthropic-ai/sdk
+
+<span class="comment"># Or OpenAI SDK</span>
+npm install openai</code></pre>
+                </div>
+                <div class="tab-content" id="sdk-go">
+                    <pre><code>go get github.com/anthropics/anthropic-sdk-go</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">3</div><div class="step-title"><span class="zh">发起第一次 API 调用</span><span class="en">Make Your First API Call</span></div></div>
+            <p><span class="zh">初始化客户端时只需替换 <span class="inline-code">base_url</span> 和 <span class="inline-code">api_key</span>，其他代码与官方 SDK 完全一致。</span><span class="en">Just replace <span class="inline-code">base_url</span> and <span class="inline-code">api_key</span> when initializing the client. Everything else is identical to the official SDK.</span></p>
+
+            <div class="tab-group">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(this,'call-anthropic')">Python (Anthropic)</button>
+                    <button class="tab-btn" onclick="switchTab(this,'call-openai')">Python (OpenAI)</button>
+                    <button class="tab-btn" onclick="switchTab(this,'call-curl')">cURL</button>
+                    <button class="tab-btn" onclick="switchTab(this,'call-node')">Node.js</button>
+                </div>
+                <div class="tab-content active" id="call-anthropic">
+                    <pre><code>import anthropic
+
+client = anthropic.Anthropic(
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai"
+)
+
+message = client.messages.create(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "Hello, introduce yourself in one sentence"}
+    ]
+)
+print(message.content[0].text)</code></pre>
+                </div>
+                <div class="tab-content" id="call-openai">
+                    <pre><code>from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai/openai/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-5.4",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": "Hello, introduce yourself in one sentence"}
+    ]
+)
+print(response.choices[0].message.content)</code></pre>
+                </div>
+                <div class="tab-content" id="call-curl">
+                    <pre><code>curl https://anyhop.ai/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: sk-anyhop-xxxx" \
+  -H "anthropic-version: 2023-06-01" \
+  -d '{
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 1024,
+    "messages": [
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'</code></pre>
+                </div>
+                <div class="tab-content" id="call-node">
+                    <pre><code>import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  apiKey: "sk-anyhop-xxxx",
+  baseURL: "https://anyhop.ai",
+});
+
+const message = await client.messages.create({
+  model: "claude-sonnet-4-6",
+  max_tokens: 1024,
+  messages: [
+    { role: "user", content: "Hello, introduce yourself" },
+  ],
+});
+console.log(message.content[0].text);</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">4</div><div class="step-title"><span class="zh">流式输出（Streaming）</span><span class="en">Streaming Output</span></div></div>
+            <p><span class="zh">对于需要实时展示回复的场景（如聊天界面），使用流式输出可以逐字显示模型回复，大幅提升用户体验。</span><span class="en">For real-time response display (e.g., chat interfaces), streaming output shows model replies word by word, greatly improving user experience.</span></p>
+
+            <div class="tab-group">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(this,'stream-py')">Python</button>
+                    <button class="tab-btn" onclick="switchTab(this,'stream-node')">Node.js</button>
+                </div>
+                <div class="tab-content active" id="stream-py">
+                    <pre><code>import anthropic
+
+client = anthropic.Anthropic(
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai"
+)
+
+with client.messages.stream(
+    model="claude-sonnet-4-6",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Write a quicksort in Python"}]
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+
+print()</code></pre>
+                </div>
+                <div class="tab-content" id="stream-node">
+                    <pre><code>import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+  apiKey: "sk-anyhop-xxxx",
+  baseURL: "https://anyhop.ai",
+});
+
+const stream = client.messages.stream({
+  model: "claude-sonnet-4-6",
+  max_tokens: 1024,
+  messages: [
+    { role: "user", content: "Write a quicksort in JavaScript" },
+  ],
+});
+
+for await (const event of stream) {
+  if (event.type === "content_block_delta"
+      && event.delta.type === "text_delta") {
+    process.stdout.write(event.delta.text);
+  }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">5</div><div class="step-title"><span class="zh">在 Claude Code 中使用</span><span class="en">Use with Claude Code</span></div></div>
+            <p><span class="zh">Claude Code 是 Anthropic 官方的 AI 编程工具，支持 CLI、桌面端（Mac/Windows）、Web 端和 IDE 插件（VS Code / JetBrains）。</span><span class="en">Claude Code is Anthropic's official AI coding tool, available as CLI, desktop app (Mac/Windows), web app, and IDE extensions (VS Code / JetBrains).</span></p>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151"><span class="zh">方式一：环境变量（推荐）</span><span class="en">Method 1: Environment Variables (Recommended)</span></h3>
+            <div class="tab-group">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(this,'cc-mac')">macOS / Linux</button>
+                    <button class="tab-btn" onclick="switchTab(this,'cc-win')">Windows PowerShell</button>
+                    <button class="tab-btn" onclick="switchTab(this,'cc-cmd')">Windows CMD</button>
+                </div>
+                <div class="tab-content active" id="cc-mac">
+                    <pre><code><span class="comment"># 添加到 ~/.bashrc 或 ~/.zshrc 永久生效</span>
+export ANTHROPIC_API_KEY="sk-anyhop-xxxx"
+export ANTHROPIC_BASE_URL="https://anyhop.ai"
+
+<span class="comment"># 然后启动 Claude Code</span>
+claude</code></pre>
+                </div>
+                <div class="tab-content" id="cc-win">
+                    <pre><code><span class="comment"># 临时设置（当前会话）</span>
+$env:ANTHROPIC_API_KEY="sk-anyhop-xxxx"
+$env:ANTHROPIC_BASE_URL="https://anyhop.ai"
+claude
+
+<span class="comment"># 永久设置（写入用户环境变量）</span>
+[System.Environment]::SetEnvironmentVariable("ANTHROPIC_API_KEY", "sk-anyhop-xxxx", "User")
+[System.Environment]::SetEnvironmentVariable("ANTHROPIC_BASE_URL", "https://anyhop.ai", "User")</code></pre>
+                </div>
+                <div class="tab-content" id="cc-cmd">
+                    <pre><code><span class="comment">:: 临时设置</span>
+set ANTHROPIC_API_KEY=sk-anyhop-xxxx
+set ANTHROPIC_BASE_URL=https://anyhop.ai
+claude
+
+<span class="comment">:: 永久设置</span>
+setx ANTHROPIC_API_KEY "sk-anyhop-xxxx"
+setx ANTHROPIC_BASE_URL "https://anyhop.ai"</code></pre>
+                </div>
+            </div>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151"><span class="zh">方式二：VS Code 插件设置</span><span class="en">Method 2: VS Code Extension Settings</span></h3>
+            <p><span class="zh">在 VS Code 中安装 Claude Code 插件后，打开设置（<span class="inline-code">Ctrl+,</span>），搜索 <span class="inline-code">claude</span>，配置：</span><span class="en">After installing the Claude Code extension in VS Code, open Settings (<span class="inline-code">Ctrl+,</span>), search <span class="inline-code">claude</span>, and configure:</span></p>
+            <pre><code><span class="comment">// settings.json</span>
+{
+  "claude-code.apiKey": "sk-anyhop-xxxx",
+  "claude-code.apiBaseUrl": "https://anyhop.ai"
+}</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151"><span class="zh">方式三：JetBrains 插件设置</span><span class="en">Method 3: JetBrains Plugin Settings</span></h3>
+            <p><span class="zh">在 JetBrains IDE（IntelliJ / PyCharm / WebStorm 等）中：Settings → Tools → Claude Code，填入 API Key 和 Base URL。</span><span class="en">In JetBrains IDEs (IntelliJ / PyCharm / WebStorm): Settings → Tools → Claude Code, enter API Key and Base URL.</span></p>
+
+            <div class="tip"><span class="zh">💡 环境变量方式对所有 Claude Code 客户端（CLI、桌面端、IDE 插件）通用。设置后重启终端或 IDE 即可生效。</span><span class="en">💡 Environment variables work across all Claude Code clients (CLI, desktop, IDE extensions). Restart your terminal or IDE after setting them.</span></div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">6</div><div class="step-title"><span class="zh">在第三方工具中使用</span><span class="en">Use with Third-party Tools</span></div></div>
+            <p><span class="zh">AnyHop AI 兼容所有支持自定义 API 端点的第三方工具。以下是各主流工具的详细配置方法：</span><span class="en">AnyHop AI is compatible with all third-party tools that support custom API endpoints. Here are detailed setup guides for popular tools:</span></p>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">Cursor</h3>
+            <p><span class="zh">Cursor 是基于 VS Code 的 AI 编辑器。配置路径：Settings → Models → OpenAI API Key</span><span class="en">Cursor is an AI-powered code editor based on VS Code. Go to: Settings → Models → OpenAI API Key</span></p>
+            <pre><code><span class="comment"># Cursor 设置</span>
+API Key:  sk-anyhop-xxxx
+Base URL: https://anyhop.ai/openai/v1
+
+<span class="comment"># 或在 ~/.cursor/config.json 中配置</span>
+{
+  "openai.apiKey": "sk-anyhop-xxxx",
+  "openai.baseUrl": "https://anyhop.ai/openai/v1"
+}</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">Windsurf</h3>
+            <p><span class="zh">Windsurf（原 Codeium 编辑器）配置路径：Settings → AI Provider</span><span class="en">Windsurf (formerly Codeium editor): Settings → AI Provider</span></p>
+            <pre><code><span class="comment"># Windsurf 设置</span>
+Provider: OpenAI Compatible
+API Key:  sk-anyhop-xxxx
+Base URL: https://anyhop.ai/openai/v1
+Model:    gpt-4o / claude-sonnet-4-6</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">Cline (VS Code)</h3>
+            <p><span class="zh">Cline 是 VS Code 上最流行的 AI 编程插件之一。安装后在侧边栏打开 Cline 面板，点击设置图标：</span><span class="en">Cline is one of the most popular AI coding extensions for VS Code. After installing, open the Cline panel and click the settings icon:</span></p>
+            <pre><code><span class="comment"># Cline 设置</span>
+API Provider: Anthropic
+API Key:      sk-anyhop-xxxx
+Base URL:     https://anyhop.ai
+Model:        claude-sonnet-4-6
+
+<span class="comment"># 或选择 OpenAI Compatible</span>
+API Provider: OpenAI Compatible
+API Key:      sk-anyhop-xxxx
+Base URL:     https://anyhop.ai/openai/v1
+Model:        gpt-4o</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">Continue (VS Code / JetBrains)</h3>
+            <p><span class="zh">Continue 支持 VS Code 和 JetBrains。编辑配置文件 <span class="inline-code">~/.continue/config.json</span>：</span><span class="en">Continue supports VS Code and JetBrains. Edit <span class="inline-code">~/.continue/config.json</span>:</span></p>
+            <pre><code>{
+  "models": [
+    {
+      "title": "Claude via AnyHop",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-6",
+      "apiKey": "sk-anyhop-xxxx",
+      "apiBase": "https://anyhop.ai"
+    },
+    {
+      "title": "GPT via AnyHop",
+      "provider": "openai",
+      "model": "gpt-4o",
+      "apiKey": "sk-anyhop-xxxx",
+      "apiBase": "https://anyhop.ai/openai/v1"
+    }
+  ]
+}</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">Aider</h3>
+            <p><span class="zh">Aider 是命令行 AI 编程助手，通过环境变量配置：</span><span class="en">Aider is a CLI AI coding assistant. Configure via environment variables:</span></p>
+            <pre><code><span class="comment"># 使用 Anthropic 格式</span>
+export ANTHROPIC_API_KEY="sk-anyhop-xxxx"
+export ANTHROPIC_BASE_URL="https://anyhop.ai"
+aider --model claude-sonnet-4-6
+
+<span class="comment"># 或使用 OpenAI 格式</span>
+export OPENAI_API_KEY="sk-anyhop-xxxx"
+export OPENAI_API_BASE="https://anyhop.ai/openai/v1"
+aider --model gpt-4o</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">ChatBox / LobeChat / Open WebUI</h3>
+            <p><span class="zh">这些桌面/Web 聊天客户端配置方式类似：</span><span class="en">These desktop/web chat clients share a similar setup:</span></p>
+            <pre><code><span class="comment"># 通用配置</span>
+API Provider: OpenAI API Compatible
+API Host:     https://anyhop.ai/openai/v1
+API Key:      sk-anyhop-xxxx
+Model:        gpt-4o / claude-sonnet-4-6</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">LangChain / LlamaIndex</h3>
+            <p><span class="zh">在代码框架中使用：</span><span class="en">Use in code frameworks:</span></p>
+            <pre><code><span class="comment"># LangChain</span>
+from langchain_anthropic import ChatAnthropic
+
+llm = ChatAnthropic(
+    model="claude-sonnet-4-6",
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai"
+)
+
+<span class="comment"># LangChain (OpenAI)</span>
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model="gpt-4o",
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai/openai/v1"
+)</code></pre>
+
+            <h3 style="font-size:.92rem;font-weight:700;margin:16px 0 8px;color:#374151">Dify / FastGPT / Coze</h3>
+            <p><span class="zh">在这些低代码 AI 平台中，进入「模型供应商」设置，添加自定义模型：</span><span class="en">In these low-code AI platforms, go to "Model Provider" settings and add a custom model:</span></p>
+            <pre><code><span class="comment"># Dify 配置路径：设置 → 模型供应商 → 添加自定义模型</span>
+Provider Type: OpenAI-API-compatible
+Model Name:   gpt-4o
+API Key:      sk-anyhop-xxxx
+API Endpoint: https://anyhop.ai/openai/v1</code></pre>
+
+            <div class="tip"><span class="zh">💡 <strong>通用规则：</strong>如果工具支持 Anthropic 原生格式，Base URL 填 <span class="inline-code">https://anyhop.ai</span>；如果只支持 OpenAI 格式，填 <span class="inline-code">https://anyhop.ai/openai/v1</span>。API Key 统一使用 <span class="inline-code">sk-anyhop-xxxx</span> 格式。</span><span class="en">💡 <strong>General rule:</strong> If the tool supports Anthropic native format, use <span class="inline-code">https://anyhop.ai</span>; if it only supports OpenAI format, use <span class="inline-code">https://anyhop.ai/openai/v1</span>. API Key is always in <span class="inline-code">sk-anyhop-xxxx</span> format.</span></div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step">
+            <div class="step-head"><div class="step-num">7</div><div class="step-title"><span class="zh">充值与查看用量</span><span class="en">Top Up & View Usage</span></div></div>
+            <p><span class="zh">在控制台「充值」页面选择套餐进行充值。在「个人中心」可查看实时余额、详细用量统计和调用日志。</span><span class="en">Top up on the "Recharge" page in the console. Check real-time balance, detailed usage stats, and API call logs in "Account Center".</span></p>
+            <p><span class="zh">所有模型按实际 Token 用量计费，价格详见 <a href="pricing.html" style="color:var(--accent);font-weight:600">模型广场</a>。API 文档详见 <a href="docs.html" style="color:var(--accent);font-weight:600">完整文档</a>。</span><span class="en">All models are billed by actual token usage. See <a href="pricing.html" style="color:var(--accent);font-weight:600">Models</a> for pricing. See <a href="docs.html" style="color:var(--accent);font-weight:600">API Docs</a> for details.</span></p>
+
+            <div class="feature-list">
+                <div class="feature-item"><span class="check">✓</span> <span class="zh">实时余额查看</span><span class="en">Real-time balance</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span class="zh">按模型用量统计</span><span class="en">Per-model usage stats</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span class="zh">每日/月度账单</span><span class="en">Daily/monthly bills</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span class="zh">API 调用日志</span><span class="en">API call logs</span></div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <a href="https://anyhop.ai/login?redirect=/logen" class="btn-main" target="_top"><span class="zh">立即开始使用 &rarr;</span><span class="en">Get Started &rarr;</span></a>
+        </div>
+    </div>
+
+    <div class="footer-wrap">
+        <footer class="footer">
+            <div>&copy; 2026 AnyHop AI. <span class="zh">保留所有权利.</span><span class="en">All rights reserved.</span></div>
+            <div class="footer-links">
+                <a href="docs.html"><span class="zh">文档</span><span class="en">Docs</span></a>
+                <a href="terms.html"><span class="zh">服务条款</span><span class="en">Terms</span></a>
+                <a href="privacy.html"><span class="zh">隐私政策</span><span class="en">Privacy</span></a>
+                <a href="policy.html"><span class="zh">使用政策</span><span class="en">Policy</span></a>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<script>
+let lang=localStorage.getItem('anyhop-lang')||'zh';
+document.documentElement.setAttribute('data-lang',lang);
+function toggleLang(){
+    lang=lang==='zh'?'en':'zh';
+    localStorage.setItem('anyhop-lang',lang);
+    document.documentElement.setAttribute('data-lang',lang);
+}
+function switchTab(btn,id){
+    const group=btn.closest('.tab-group');
+    group.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    group.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>

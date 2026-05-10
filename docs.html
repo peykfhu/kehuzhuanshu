@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 文档 - AnyHop AI</title>
+    <style>
+        :root{--bg:#fafafa;--text:#111827;--muted:#6b7280;--border:#e5e7eb;--accent:#8b5cf6;--card:#fff;--nav-bg:rgba(255,255,255,.72)}
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}a{text-decoration:none;color:inherit}
+        body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+        [data-lang="en"] .zh{display:none!important}
+        [data-lang="zh"] .en{display:none!important}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .page{min-height:100vh;display:flex;flex-direction:column}
+
+        .nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;position:relative;z-index:10;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+        .nav-logo{font-size:1.15rem;font-weight:800;display:flex;align-items:center;gap:10px;letter-spacing:-.5px;transition:opacity .3s}
+        .nav-logo:hover{opacity:.8}
+        .logo-img{width:30px;height:30px;border-radius:7px;object-fit:cover}
+        .nav-links{display:flex;gap:20px;align-items:center;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:8px 26px;border-radius:40px;border:1px solid rgba(0,0,0,.04);box-shadow:0 2px 12px rgba(0,0,0,.03);font-size:.86rem;font-weight:500}
+        .nav-links a{color:var(--muted);transition:all .3s cubic-bezier(.22,1,.36,1);position:relative}
+        .nav-links a:hover,.nav-links a.active{color:var(--accent)}
+        .nav-links a.active::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent)}
+        .nav-right{display:flex;align-items:center;gap:10px}
+        .lang-btn{background:none;border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:.82rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .3s;font-family:inherit}
+        .lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .btn-console{background:linear-gradient(135deg,#18181b,#27272a);color:#fff;padding:8px 22px;border-radius:30px;font-size:.86rem;font-weight:600;transition:all .35s cubic-bezier(.22,1,.36,1)}
+        .btn-console:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+
+        .layout{max-width:1140px;margin:0 auto;padding:0 24px;flex:1;display:flex;gap:44px}
+        .sidebar{width:210px;flex-shrink:0;padding:40px 0;position:sticky;top:0;height:fit-content;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .1s both}
+        .sidebar h4{font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:1.5px;margin-bottom:10px}
+        .sidebar ul{list-style:none;margin-bottom:22px}
+        .sidebar li a{display:block;padding:6px 14px;border-radius:8px;font-size:.84rem;color:var(--muted);transition:all .25s cubic-bezier(.22,1,.36,1);margin-bottom:1px;border-left:2px solid transparent}
+        .sidebar li a:hover{color:var(--text);background:#f3f4f6;transform:translateX(2px)}
+        .sidebar li a.active{color:var(--accent);border-left-color:var(--accent);background:rgba(139,92,246,.04);font-weight:500}
+        .content{flex:1;padding:40px 0 60px;min-width:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) .15s both}
+        .content h1{font-size:2rem;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
+        .content .subtitle{color:var(--muted);font-size:.92rem;margin-bottom:36px}
+        .content h2{font-size:1.25rem;font-weight:700;margin:44px 0 14px;padding-top:24px;border-top:1px solid var(--border);scroll-margin-top:20px}
+        .content h2:first-of-type{border-top:none;margin-top:0;padding-top:0}
+        .content h3{font-size:1rem;font-weight:600;margin:24px 0 10px;color:#374151}
+        .content p{font-size:.9rem;line-height:1.78;color:#374151;margin-bottom:14px}
+
+        pre{background:#0f172a;color:#e2e8f0;padding:18px 22px;border-radius:12px;overflow-x:auto;font-size:.79rem;line-height:1.7;margin:14px 0;border:1px solid rgba(255,255,255,.06);transition:box-shadow .3s}
+        pre:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+        code{font-family:"SF Mono","Fira Code",Menlo,monospace}
+        .ic{background:#f3f4f6;padding:2px 8px;border-radius:6px;font-size:.82rem;font-family:"SF Mono","Fira Code",Menlo,monospace;color:#be185d}
+        .comment{color:#64748b}
+
+        table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.85rem}
+        th{background:#f9fafb;text-align:left;padding:10px 14px;font-weight:600;border-bottom:2px solid var(--border);font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+        td{padding:10px 14px;border-bottom:1px solid var(--border);color:#374151;transition:background .2s}
+        tr:hover td{background:#fafbfc}
+        .method{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.72rem;font-weight:700;font-family:monospace;letter-spacing:.5px}
+        .m-get{background:#dbeafe;color:#1d4ed8}
+        .m-post{background:#dcfce7;color:#166534}
+
+        .note{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;font-size:.84rem;color:#92400e;margin:16px 0;line-height:1.65}
+        .note-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+        .note-tip{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+
+        .endpoint-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:14px 0;display:flex;align-items:center;gap:12px;transition:all .3s cubic-bezier(.22,1,.36,1)}
+        .endpoint-card:hover{border-color:#c4b5fd;box-shadow:0 4px 12px rgba(139,92,246,.06)}
+
+        .footer-wrap{border-top:1px solid var(--border);padding:20px 24px;margin-top:auto}
+        .footer{max-width:1140px;margin:0 auto;display:flex;justify-content:space-between;font-size:.78rem;color:#9ca3af;flex-wrap:wrap;gap:10px}
+        .footer-links{display:flex;gap:20px}
+        .footer-links a{transition:color .3s}
+        .footer-links a:hover{color:var(--accent)}
+
+        @media(max-width:768px){
+            .nav{padding:14px 16px;flex-wrap:wrap;gap:10px}.nav-links{display:none}
+            .sidebar{display:none}
+            .layout{flex-direction:column}
+            .footer{flex-direction:column;align-items:center;text-align:center}
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header class="nav">
+        <a href="index.html" class="nav-logo"><img src="anyhop.jpg" alt="AnyHop AI" class="logo-img"> AnyHop AI</a>
+        <nav class="nav-links">
+            <a href="index.html"><span class="zh">首页</span><span class="en">Home</span></a>
+            <a href="pricing.html"><span class="zh">模型广场</span><span class="en">Models</span></a>
+            <a href="tutorial.html"><span class="zh">教程</span><span class="en">Tutorial</span></a>
+            <a href="docs.html" class="active"><span class="zh">文档</span><span class="en">Docs</span></a>
+        </nav>
+        <div class="nav-right">
+            <button class="lang-btn" onclick="toggleLang()"><span class="zh">EN</span><span class="en">中文</span></button>
+            <a href="index.html" class="btn-console"><span class="zh">控制台 ↗</span><span class="en">Console ↗</span></a>
+        </div>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <h4><span class="zh">概览</span><span class="en">Overview</span></h4>
+            <ul>
+                <li><a href="#intro" class="active"><span class="zh">简介</span><span class="en">Introduction</span></a></li>
+                <li><a href="#auth"><span class="zh">认证方式</span><span class="en">Authentication</span></a></li>
+                <li><a href="#base-url">Base URL</a></li>
+                <li><a href="#versioning"><span class="zh">版本控制</span><span class="en">Versioning</span></a></li>
+            </ul>
+            <h4>API <span class="zh">参考</span><span class="en">Reference</span></h4>
+            <ul>
+                <li><a href="#messages">Messages</a></li>
+                <li><a href="#multi-turn"><span class="zh">多轮对话</span><span class="en">Multi-turn</span></a></li>
+                <li><a href="#vision"><span class="zh">多模态 / 视觉</span><span class="en">Vision</span></a></li>
+                <li><a href="#streaming">Streaming</a></li>
+                <li><a href="#models">Models</a></li>
+                <li><a href="#openai"><span class="zh">OpenAI 兼容</span><span class="en">OpenAI Compat</span></a></li>
+            </ul>
+            <h4><span class="zh">高级</span><span class="en">Advanced</span></h4>
+            <ul>
+                <li><a href="#system-prompt"><span class="zh">系统提示词</span><span class="en">System Prompt</span></a></li>
+                <li><a href="#tool-use">Tool Use</a></li>
+                <li><a href="#caching">Prompt Caching</a></li>
+            </ul>
+            <h4><span class="zh">其他</span><span class="en">Other</span></h4>
+            <ul>
+                <li><a href="#errors"><span class="zh">错误处理</span><span class="en">Errors</span></a></li>
+                <li><a href="#limits"><span class="zh">速率限制</span><span class="en">Rate Limits</span></a></li>
+                <li><a href="#sdk"><span class="zh">SDK 与工具</span><span class="en">SDK & Tools</span></a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <h1><span class="zh">API 文档</span><span class="en">API Documentation</span></h1>
+            <p class="subtitle"><span class="zh">AnyHop AI 兼容 Anthropic / OpenAI API 格式，无缝切换，即改即用。</span><span class="en">AnyHop AI is compatible with Anthropic / OpenAI API formats. Seamless switching, instant integration.</span></p>
+
+            <h2 id="intro"><span class="zh">简介</span><span class="en">Introduction</span></h2>
+            <p><span class="zh">AnyHop AI 提供统一的 API 网关服务，通过一个 API Key 即可访问 Claude、GPT、Gemini、DeepSeek 等多种主流大模型。接口与 Anthropic / OpenAI 官方完全兼容，现有代码仅需修改 Base URL 即可接入，无需更改任何业务逻辑。</span><span class="en">AnyHop AI provides a unified API gateway service. Access Claude, GPT, Gemini, DeepSeek and more with a single API Key. Fully compatible with Anthropic / OpenAI official APIs — just change the Base URL in your existing code.</span></p>
+            <div class="note note-info"><span class="zh">💡 已在使用 Anthropic 或 OpenAI SDK？只需替换 <code class="ic">base_url</code> 和 <code class="ic">api_key</code> 两个参数即可立即使用 AnyHop AI，无需修改任何其他代码。</span><span class="en">💡 Already using Anthropic or OpenAI SDK? Just replace <code class="ic">base_url</code> and <code class="ic">api_key</code> to start using AnyHop AI — no other code changes needed.</span></div>
+
+            <h2 id="auth"><span class="zh">认证方式</span><span class="en">Authentication</span></h2>
+            <p><span class="zh">所有 API 请求都需要在 HTTP Header 中携带 API Key 进行身份认证。AnyHop AI 支持以下两种认证格式，你可以根据使用的 SDK 选择对应的方式：</span><span class="en">All API requests require an API Key in the HTTP Header. AnyHop AI supports two authentication formats — choose based on your SDK:</span></p>
+            <h3><span class="zh">方式一：Anthropic 原生格式</span><span class="en">Method 1: Anthropic Native Format</span></h3>
+            <p><span class="zh">适用于 Anthropic SDK 或直接调用 Anthropic 兼容端点：</span><span class="en">For Anthropic SDK or direct Anthropic-compatible endpoint calls:</span></p>
+            <pre><code>x-api-key: sk-anyhop-xxxxxxxxxxxx</code></pre>
+            <h3><span class="zh">方式二：Bearer Token 格式</span><span class="en">Method 2: Bearer Token Format</span></h3>
+            <p><span class="zh">适用于 OpenAI SDK 或通用 HTTP 客户端：</span><span class="en">For OpenAI SDK or generic HTTP clients:</span></p>
+            <pre><code>Authorization: Bearer sk-anyhop-xxxxxxxxxxxx</code></pre>
+            <div class="note"><span class="zh">⚠️ <strong>安全提醒：</strong>请勿在客户端、前端代码或公开仓库中暴露 API Key。API Key 应仅在服务端安全环境中使用。如果 Key 不慎泄露，请立即在控制台重新生成。</span><span class="en">⚠️ <strong>Security:</strong> Never expose API Keys in client-side code, frontend, or public repositories. Use them only in server-side environments. If a key is compromised, regenerate it immediately in the console.</span></div>
+
+            <h2 id="base-url">Base URL</h2>
+            <p><span class="zh">根据你使用的 SDK 类型，选择对应的 Base URL：</span><span class="en">Choose the Base URL based on your SDK type:</span></p>
+            <table>
+                <tr><th><span class="zh">兼容格式</span><span class="en">Format</span></th><th>Base URL</th><th><span class="zh">适用场景</span><span class="en">Use Case</span></th></tr>
+                <tr><td>Anthropic</td><td><code class="ic">https://anyhop.ai</code></td><td><span class="zh">anthropic SDK / Claude Code / Cline / Aider</span><span class="en">anthropic SDK / Claude Code / Cline / Aider</span></td></tr>
+                <tr><td>OpenAI</td><td><code class="ic">https://anyhop.ai/openai/v1</code></td><td><span class="zh">openai SDK / Cursor / Windsurf / ChatBox</span><span class="en">openai SDK / Cursor / Windsurf / ChatBox</span></td></tr>
+            </table>
+
+            <h2 id="versioning"><span class="zh">版本控制</span><span class="en">Versioning</span></h2>
+            <p><span class="zh">使用 Anthropic 兼容端点时，需要在请求头中指定 API 版本：</span><span class="en">When using Anthropic-compatible endpoints, specify the API version in the request header:</span></p>
+            <pre><code>anthropic-version: 2023-06-01</code></pre>
+            <p><span class="zh">当前支持的版本为 <code class="ic">2023-06-01</code>，建议始终显式指定版本号以确保接口行为一致。</span><span class="en">Currently supported version is <code class="ic">2023-06-01</code>. Always specify the version explicitly for consistent API behavior.</span></p>
+
+            <h2 id="messages">Messages API</h2>
+            <p><span class="zh">Messages API 是最核心的接口，用于发送消息并获取 AI 模型的回复。完全兼容 Anthropic Messages API 规范。</span><span class="en">The Messages API is the core endpoint for sending messages and receiving AI model responses. Fully compatible with the Anthropic Messages API spec.</span></p>
+
+            <div class="endpoint-card">
+                <span class="method m-post">POST</span>
+                <code class="ic">/v1/messages</code>
+            </div>
+
+            <h3><span class="zh">请求体参数</span><span class="en">Request Body Parameters</span></h3>
+            <table>
+                <tr><th><span class="zh">参数</span><span class="en">Param</span></th><th><span class="zh">类型</span><span class="en">Type</span></th><th><span class="zh">必填</span><span class="en">Required</span></th><th><span class="zh">说明</span><span class="en">Description</span></th></tr>
+                <tr><td><code class="ic">model</code></td><td>string</td><td><span class="zh">是</span><span class="en">Yes</span></td><td><span class="zh">模型 ID，如 <code class="ic">claude-sonnet-4-6</code></span><span class="en">Model ID, e.g. <code class="ic">claude-sonnet-4-6</code></span></td></tr>
+                <tr><td><code class="ic">messages</code></td><td>array</td><td><span class="zh">是</span><span class="en">Yes</span></td><td><span class="zh">对话消息列表，每条消息包含 role 和 content</span><span class="en">List of messages, each with role and content</span></td></tr>
+                <tr><td><code class="ic">max_tokens</code></td><td>integer</td><td><span class="zh">是</span><span class="en">Yes</span></td><td><span class="zh">模型最大输出 Token 数</span><span class="en">Max output tokens</span></td></tr>
+                <tr><td><code class="ic">system</code></td><td>string | array</td><td><span class="zh">否</span><span class="en">No</span></td><td><span class="zh">系统提示词</span><span class="en">System prompt</span></td></tr>
+                <tr><td><code class="ic">temperature</code></td><td>number</td><td><span class="zh">否</span><span class="en">No</span></td><td><span class="zh">采样温度 (0-1)，默认 1</span><span class="en">Sampling temperature (0-1), default 1</span></td></tr>
+                <tr><td><code class="ic">stream</code></td><td>boolean</td><td><span class="zh">否</span><span class="en">No</span></td><td><span class="zh">是否启用流式输出，默认 false</span><span class="en">Enable streaming, default false</span></td></tr>
+                <tr><td><code class="ic">top_p</code></td><td>number</td><td><span class="zh">否</span><span class="en">No</span></td><td>Top-P (0-1)</td></tr>
+                <tr><td><code class="ic">top_k</code></td><td>integer</td><td><span class="zh">否</span><span class="en">No</span></td><td>Top-K</td></tr>
+                <tr><td><code class="ic">stop_sequences</code></td><td>array</td><td><span class="zh">否</span><span class="en">No</span></td><td><span class="zh">自定义停止序列</span><span class="en">Custom stop sequences</span></td></tr>
+                <tr><td><code class="ic">metadata</code></td><td>object</td><td><span class="zh">否</span><span class="en">No</span></td><td><span class="zh">请求元数据</span><span class="en">Request metadata</span></td></tr>
+            </table>
+
+            <h3><span class="zh">基础请求示例</span><span class="en">Basic Request Example</span></h3>
+            <pre><code>curl https://anyhop.ai/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: sk-anyhop-xxxx" \
+  -H "anthropic-version: 2023-06-01" \
+  -d '{
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 1024,
+    "messages": [
+      {"role": "user", "content": "What is an API gateway?"}
+    ]
+  }'</code></pre>
+
+            <h3><span class="zh">响应格式</span><span class="en">Response Format</span></h3>
+            <pre><code>{
+  "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+    {
+      "type": "text",
+      "text": "An API gateway is a server that acts as an intermediary..."
+    }
+  ],
+  "model": "claude-sonnet-4-6",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 18,
+    "output_tokens": 156
+  }
+}</code></pre>
+
+            <h3>stop_reason</h3>
+            <table>
+                <tr><th><span class="zh">值</span><span class="en">Value</span></th><th><span class="zh">说明</span><span class="en">Description</span></th></tr>
+                <tr><td><code class="ic">end_turn</code></td><td><span class="zh">模型正常完成回复</span><span class="en">Normal completion</span></td></tr>
+                <tr><td><code class="ic">max_tokens</code></td><td><span class="zh">达到上限被截断</span><span class="en">Truncated at max_tokens</span></td></tr>
+                <tr><td><code class="ic">stop_sequence</code></td><td><span class="zh">遇到停止序列</span><span class="en">Hit stop sequence</span></td></tr>
+                <tr><td><code class="ic">tool_use</code></td><td><span class="zh">请求使用工具</span><span class="en">Tool use requested</span></td></tr>
+            </table>
+
+            <h2 id="multi-turn"><span class="zh">多轮对话</span><span class="en">Multi-turn Conversations</span></h2>
+            <p><span class="zh">通过在 <code class="ic">messages</code> 数组中交替排列 <code class="ic">user</code> 和 <code class="ic">assistant</code> 角色的消息，可以实现多轮对话。</span><span class="en">Alternate <code class="ic">user</code> and <code class="ic">assistant</code> roles in the <code class="ic">messages</code> array for multi-turn conversations.</span></p>
+            <pre><code>{
+  "model": "claude-sonnet-4-6",
+  "max_tokens": 1024,
+  "messages": [
+    {"role": "user", "content": "I'm learning Python, can you help?"},
+    {"role": "assistant", "content": "Of course! What topic would you like to start with?"},
+    {"role": "user", "content": "How do list comprehensions work?"}
+  ]
+}</code></pre>
+            <div class="note note-tip"><span class="zh">💡 <strong>Tips：</strong>对话消息必须以 <code class="ic">user</code> 角色开始，且 user/assistant 需交替出现。每轮对话都会消耗输入 Token。</span><span class="en">💡 <strong>Tips:</strong> Messages must start with <code class="ic">user</code> role, and user/assistant must alternate. Each turn consumes input tokens.</span></div>
+
+            <h2 id="vision"><span class="zh">多模态 / 视觉</span><span class="en">Vision / Multimodal</span></h2>
+            <p><span class="zh">支持发送图片给模型进行视觉理解和分析。</span><span class="en">Send images to models for visual understanding and analysis.</span></p>
+            <h3>Base64</h3>
+            <pre><code>{
+  "model": "claude-sonnet-4-6",
+  "max_tokens": 1024,
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "image",
+          "source": {
+            "type": "base64",
+            "media_type": "image/png",
+            "data": "iVBORw0KGgo..."
+          }
+        },
+        {
+          "type": "text",
+          "text": "Describe this image in detail"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+            <table>
+                <tr><th><span class="zh">项目</span><span class="en">Item</span></th><th><span class="zh">说明</span><span class="en">Details</span></th></tr>
+                <tr><td><span class="zh">支持格式</span><span class="en">Formats</span></td><td>JPEG, PNG, GIF, WebP</td></tr>
+                <tr><td><span class="zh">单张上限</span><span class="en">Max size</span></td><td>5MB</td></tr>
+                <tr><td><span class="zh">多图支持</span><span class="en">Multi-image</span></td><td><span class="zh">单条消息最多 20 张</span><span class="en">Up to 20 per message</span></td></tr>
+            </table>
+
+            <h2 id="streaming"><span class="zh">Streaming（流式输出）</span><span class="en">Streaming</span></h2>
+            <p><span class="zh">设置 <code class="ic">"stream": true</code> 启用 SSE 流式输出，实时逐字获取模型生成的内容。</span><span class="en">Set <code class="ic">"stream": true</code> to enable SSE streaming for real-time token-by-token output.</span></p>
+            <pre><code>curl https://anyhop.ai/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: sk-anyhop-xxxx" \
+  -H "anthropic-version: 2023-06-01" \
+  -d '{
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 1024,
+    "stream": true,
+    "messages": [
+      {"role": "user", "content": "Write a short poem about coding"}
+    ]
+  }'</code></pre>
+
+            <h3><span class="zh">SSE 事件类型</span><span class="en">SSE Event Types</span></h3>
+            <table>
+                <tr><th><span class="zh">事件</span><span class="en">Event</span></th><th><span class="zh">说明</span><span class="en">Description</span></th></tr>
+                <tr><td><code class="ic">message_start</code></td><td><span class="zh">消息开始，包含元数据</span><span class="en">Message start with metadata</span></td></tr>
+                <tr><td><code class="ic">content_block_delta</code></td><td><span class="zh">增量文本内容</span><span class="en">Incremental text content</span></td></tr>
+                <tr><td><code class="ic">message_delta</code></td><td><span class="zh">包含 stop_reason 和 usage</span><span class="en">Contains stop_reason and usage</span></td></tr>
+                <tr><td><code class="ic">message_stop</code></td><td><span class="zh">消息完成</span><span class="en">Message complete</span></td></tr>
+                <tr><td><code class="ic">ping</code></td><td><span class="zh">心跳保活</span><span class="en">Keepalive ping</span></td></tr>
+            </table>
+
+            <h2 id="models">Models API</h2>
+            <p><span class="zh">查询当前可用的模型列表。</span><span class="en">Query the list of available models.</span></p>
+            <div class="endpoint-card">
+                <span class="method m-get">GET</span>
+                <code class="ic">/v1/models</code>
+            </div>
+
+            <h2 id="openai"><span class="zh">OpenAI 兼容接口</span><span class="en">OpenAI Compatible API</span></h2>
+            <p><span class="zh">AnyHop AI 同时提供完整的 OpenAI Chat Completions 兼容接口。</span><span class="en">AnyHop AI also provides a full OpenAI Chat Completions compatible interface.</span></p>
+            <div class="endpoint-card">
+                <span class="method m-post">POST</span>
+                <code class="ic">/openai/v1/chat/completions</code>
+            </div>
+            <pre><code>from openai import OpenAI
+
+client = OpenAI(
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai/openai/v1"
+)
+
+response = client.chat.completions.create(
+    model="gpt-5.4",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain microservices architecture"}
+    ]
+)
+print(response.choices[0].message.content)</code></pre>
+
+            <h2 id="system-prompt"><span class="zh">系统提示词</span><span class="en">System Prompt</span></h2>
+            <p><span class="zh">系统提示词用于定义 AI 的角色、行为方式和约束条件。</span><span class="en">System prompts define the AI's role, behavior, and constraints.</span></p>
+            <pre><code>{
+  "model": "claude-sonnet-4-6",
+  "max_tokens": 1024,
+  "system": "You are AnyHop AI's support assistant. Answer questions about our product and pricing in a professional but friendly tone.",
+  "messages": [
+    {"role": "user", "content": "What models do you support?"}
+  ]
+}</code></pre>
+
+            <h2 id="tool-use">Tool Use</h2>
+            <p><span class="zh">允许模型调用你预定义的工具/函数来获取外部信息或执行操作。</span><span class="en">Allows the model to call predefined tools/functions to fetch external information or perform actions.</span></p>
+            <pre><code>{
+  "model": "claude-sonnet-4-6",
+  "max_tokens": 1024,
+  "tools": [
+    {
+      "name": "get_weather",
+      "description": "Get current weather for a city",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "city": {"type": "string", "description": "City name"},
+          "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+        },
+        "required": ["city"]
+      }
+    }
+  ],
+  "messages": [
+    {"role": "user", "content": "What's the weather in Beijing?"}
+  ]
+}</code></pre>
+
+            <h2 id="caching">Prompt Caching</h2>
+            <p><span class="zh">对于 Anthropic 模型，支持 Prompt Caching 功能。将重复使用的系统提示词标记为可缓存，可降低约 90% 输入 Token 费用。</span><span class="en">For Anthropic models, Prompt Caching lets you mark reusable system prompts as cacheable, reducing input token costs by ~90%.</span></p>
+            <pre><code>{
+  "model": "claude-sonnet-4-6",
+  "max_tokens": 1024,
+  "system": [
+    {
+      "type": "text",
+      "text": "Your long system prompt here...",
+      "cache_control": {"type": "ephemeral"}
+    }
+  ],
+  "messages": [{"role": "user", "content": "Hello"}]
+}</code></pre>
+            <div class="note note-info"><span class="zh">💡 缓存有效期为 5 分钟，至少需要 1024 Token 才能生效。详见 <a href="pricing.html" style="color:#1e40af;font-weight:600">模型广场</a> 中的缓存价格。</span><span class="en">💡 Cache TTL is 5 minutes, requires at least 1024 tokens. See <a href="pricing.html" style="color:#1e40af;font-weight:600">Models</a> for cache pricing.</span></div>
+
+            <h2 id="errors"><span class="zh">错误处理</span><span class="en">Error Handling</span></h2>
+            <p><span class="zh">API 使用标准 HTTP 状态码。</span><span class="en">The API uses standard HTTP status codes.</span></p>
+            <table>
+                <tr><th><span class="zh">状态码</span><span class="en">Code</span></th><th><span class="zh">错误类型</span><span class="en">Error Type</span></th><th><span class="zh">说明</span><span class="en">Description</span></th></tr>
+                <tr><td>400</td><td>invalid_request_error</td><td><span class="zh">请求参数错误</span><span class="en">Bad request</span></td></tr>
+                <tr><td>401</td><td>authentication_error</td><td><span class="zh">API Key 无效</span><span class="en">Invalid API Key</span></td></tr>
+                <tr><td>403</td><td>permission_error</td><td><span class="zh">权限不足</span><span class="en">Insufficient permissions</span></td></tr>
+                <tr><td>404</td><td>not_found_error</td><td><span class="zh">模型不存在</span><span class="en">Model not found</span></td></tr>
+                <tr><td>429</td><td>rate_limit_error</td><td><span class="zh">请求超限</span><span class="en">Rate limited</span></td></tr>
+                <tr><td>500</td><td>api_error</td><td><span class="zh">服务器错误</span><span class="en">Server error</span></td></tr>
+                <tr><td>529</td><td>overloaded_error</td><td><span class="zh">上游过载</span><span class="en">Upstream overloaded</span></td></tr>
+            </table>
+
+            <h2 id="limits"><span class="zh">速率限制</span><span class="en">Rate Limits</span></h2>
+            <p><span class="zh">速率限制取决于你的账户等级。超出限制时返回 <code class="ic">429</code> 状态码。</span><span class="en">Rate limits depend on your account tier. Returns <code class="ic">429</code> when exceeded.</span></p>
+            <table>
+                <tr><th><span class="zh">响应头</span><span class="en">Header</span></th><th><span class="zh">说明</span><span class="en">Description</span></th></tr>
+                <tr><td><code class="ic">x-ratelimit-limit</code></td><td><span class="zh">最大请求数</span><span class="en">Max requests</span></td></tr>
+                <tr><td><code class="ic">x-ratelimit-remaining</code></td><td><span class="zh">剩余请求数</span><span class="en">Remaining requests</span></td></tr>
+                <tr><td><code class="ic">x-ratelimit-reset</code></td><td><span class="zh">重置时间戳</span><span class="en">Reset timestamp</span></td></tr>
+                <tr><td><code class="ic">retry-after</code></td><td><span class="zh">建议等待秒数</span><span class="en">Suggested wait (seconds)</span></td></tr>
+            </table>
+
+            <h2 id="sdk"><span class="zh">SDK 与工具集成</span><span class="en">SDK & Tool Integration</span></h2>
+            <p><span class="zh">AnyHop AI 完全兼容 Anthropic 和 OpenAI 官方 SDK，同时支持所有主流 AI 编程工具和框架。</span><span class="en">AnyHop AI is fully compatible with official Anthropic and OpenAI SDKs, and supports all major AI coding tools and frameworks.</span></p>
+
+            <h3><span class="zh">官方 SDK</span><span class="en">Official SDKs</span></h3>
+            <table>
+                <tr><th><span class="zh">语言</span><span class="en">Language</span></th><th>SDK</th><th><span class="zh">安装</span><span class="en">Install</span></th><th>Base URL</th></tr>
+                <tr><td>Python</td><td>anthropic</td><td><code class="ic">pip install anthropic</code></td><td><code class="ic">https://anyhop.ai</code></td></tr>
+                <tr><td>Python</td><td>openai</td><td><code class="ic">pip install openai</code></td><td><code class="ic">https://anyhop.ai/openai/v1</code></td></tr>
+                <tr><td>Node.js</td><td>@anthropic-ai/sdk</td><td><code class="ic">npm i @anthropic-ai/sdk</code></td><td><code class="ic">https://anyhop.ai</code></td></tr>
+                <tr><td>Node.js</td><td>openai</td><td><code class="ic">npm i openai</code></td><td><code class="ic">https://anyhop.ai/openai/v1</code></td></tr>
+                <tr><td>Go</td><td>anthropic-go</td><td><code class="ic">go get github.com/anthropics/anthropic-sdk-go</code></td><td><code class="ic">https://anyhop.ai</code></td></tr>
+            </table>
+
+            <h3>Claude Code</h3>
+            <p><span class="zh">Anthropic 官方 AI 编程工具，支持 CLI、桌面端（Mac/Windows）、Web 端（claude.ai/code）和 IDE 插件。</span><span class="en">Anthropic's official AI coding tool. Available as CLI, desktop app (Mac/Windows), web app (claude.ai/code), and IDE extensions.</span></p>
+            <pre><code><span class="comment"># 环境变量配置（适用于所有客户端）</span>
+export ANTHROPIC_API_KEY="sk-anyhop-xxxx"
+export ANTHROPIC_BASE_URL="https://anyhop.ai"
+claude</code></pre>
+            <pre><code><span class="comment">// VS Code settings.json</span>
+{
+  "claude-code.apiKey": "sk-anyhop-xxxx",
+  "claude-code.apiBaseUrl": "https://anyhop.ai"
+}</code></pre>
+
+            <h3>Cursor</h3>
+            <pre><code><span class="comment"># Settings → Models → OpenAI API Key</span>
+API Key:  sk-anyhop-xxxx
+Base URL: https://anyhop.ai/openai/v1</code></pre>
+
+            <h3>Cline (VS Code)</h3>
+            <pre><code><span class="comment"># Cline 侧边栏 → 设置</span>
+API Provider: Anthropic
+API Key:      sk-anyhop-xxxx
+Base URL:     https://anyhop.ai
+Model:        claude-sonnet-4-6</code></pre>
+
+            <h3>Continue (VS Code / JetBrains)</h3>
+            <pre><code><span class="comment">// ~/.continue/config.json</span>
+{
+  "models": [{
+    "title": "Claude via AnyHop",
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "apiKey": "sk-anyhop-xxxx",
+    "apiBase": "https://anyhop.ai"
+  }]
+}</code></pre>
+
+            <h3>Aider</h3>
+            <pre><code>export ANTHROPIC_API_KEY="sk-anyhop-xxxx"
+export ANTHROPIC_BASE_URL="https://anyhop.ai"
+aider --model claude-sonnet-4-6</code></pre>
+
+            <h3>Windsurf</h3>
+            <pre><code><span class="comment"># Settings → AI Provider</span>
+Provider: OpenAI Compatible
+API Key:  sk-anyhop-xxxx
+Base URL: https://anyhop.ai/openai/v1</code></pre>
+
+            <h3>LangChain / LlamaIndex</h3>
+            <pre><code>from langchain_anthropic import ChatAnthropic
+
+llm = ChatAnthropic(
+    model="claude-sonnet-4-6",
+    api_key="sk-anyhop-xxxx",
+    base_url="https://anyhop.ai"
+)</code></pre>
+
+            <div class="note note-info"><span class="zh">💡 <strong>通用规则：</strong>支持 Anthropic 原生格式的工具，Base URL 填 <code class="ic">https://anyhop.ai</code>；仅支持 OpenAI 格式的工具，填 <code class="ic">https://anyhop.ai/openai/v1</code>。</span><span class="en">💡 <strong>General rule:</strong> For tools with Anthropic native support, use <code class="ic">https://anyhop.ai</code>; for OpenAI-only tools, use <code class="ic">https://anyhop.ai/openai/v1</code>.</span></div>
+
+            <p><span class="zh">详细配置步骤请参考 <a href="tutorial.html" style="color:var(--accent);font-weight:600">快速上手教程</a>。</span><span class="en">For detailed setup steps, see the <a href="tutorial.html" style="color:var(--accent);font-weight:600">Quick Start Tutorial</a>.</span></p>
+        </main>
+    </div>
+
+    <div class="footer-wrap">
+        <footer class="footer">
+            <div>&copy; 2026 AnyHop AI. <span class="zh">保留所有权利.</span><span class="en">All rights reserved.</span></div>
+            <div class="footer-links">
+                <a href="docs.html"><span class="zh">文档</span><span class="en">Docs</span></a>
+                <a href="terms.html"><span class="zh">服务条款</span><span class="en">Terms</span></a>
+                <a href="privacy.html"><span class="zh">隐私政策</span><span class="en">Privacy</span></a>
+                <a href="policy.html"><span class="zh">使用政策</span><span class="en">Policy</span></a>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<script>
+let lang=localStorage.getItem('anyhop-lang')||'zh';
+document.documentElement.setAttribute('data-lang',lang);
+function toggleLang(){
+    lang=lang==='zh'?'en':'zh';
+    localStorage.setItem('anyhop-lang',lang);
+    document.documentElement.setAttribute('data-lang',lang);
+}
+document.querySelectorAll('.sidebar a').forEach(link=>{
+    link.addEventListener('click',function(){
+        document.querySelectorAll('.sidebar a').forEach(l=>l.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+window.addEventListener('scroll',()=>{
+    const sections=document.querySelectorAll('h2[id]');
+    let current='';
+    sections.forEach(s=>{if(window.scrollY>=s.offsetTop-80)current=s.id});
+    document.querySelectorAll('.sidebar a').forEach(a=>{
+        a.classList.toggle('active',a.getAttribute('href')==='#'+current);
+    });
+});
+</script>
+</body>
+</html>
